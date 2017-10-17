@@ -37,9 +37,9 @@ Directory matlab/ contains the MATLAB wrapper for the C++ codes.
  
  
 ### USAGE:
-
+  ```bash
     km_config [input-file] [output-file] [options]
-  
+  ```
 
   km_config seeks multiple core-periphery pairs in the network given by [input-file] and saves the detected core-periphery pairs in [output-file].
   
