@@ -6,7 +6,7 @@ MATLAB and C++ codes for the KM--config algorithm.
 
 Please cite
   Kojaku, S. and Masuda, N. ???. Preprint arXiv:???? (2017).
-———————————————————————————————————————————————————————————————————————————
+---
 Directory cpp/ contains C++ codes.
       
   cpp/km_config.h is the header file.
@@ -18,7 +18,7 @@ Directory cpp/ contains C++ codes.
   cpp/makefile is the makefile for the C++ codes. 
 
   cpp/example_edge_list.txt is an edge list of a network consisting of two idealised core-periphery pairs.
-———————————————————————————————————————————————————————————————————————————
+---
 Directory matlab/ contains the MATLAB wrapper for the C++ codes.
   
   matlab/km_config.m is the code for the MATLAB client.
@@ -28,7 +28,7 @@ Directory matlab/ contains the MATLAB wrapper for the C++ codes.
   matlab/makefile is the makefile for the MATLAB codes. 
   
   matlab/example.m is a usage example. 
-———————————————————————————————————————————————————————————————————————————
+---
 C++
 
   COMPILE:
@@ -86,7 +86,7 @@ C++
     To find significant core-periphery pairs at a significance level of 0.05, type
  
       ./km_config example_edge_list.txt result.txt -a 0.05 
-———————————————————————————————————————————————————————————————————————————
+---
 MATLAB  
       
   COMPILE:
@@ -151,5 +151,5 @@ MATLAB
   REQUIREMENT: 
       
     MATLAB 2012 or later.
-———————————————————————————————————————————————————————————————————————————
+---
 Last updated: 14 October 2017
