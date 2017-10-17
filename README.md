@@ -7,26 +7,17 @@ Please cite
 
 ## Files
 Directory cpp/ contains C++ codes.  
-
   * cpp/km_config.h is the header file.
-  
   * cpp/km_config.cpp is the implementation file of the header file, km_config.h.
-  
   * cpp/km_config_cl.cpp is the code for the command line client.
-  
   * cpp/makefile is the makefile for the C++ codes. 
-
   * cpp/example_edge_list.txt is an edge list of a network consisting of two idealised core-periphery pairs.
 
 
 Directory matlab/ contains the MATLAB wrapper for the C++ codes.  
-
   * matlab/km_config.m is the code for the MATLAB client.
-
   * matlab/km_config_mex.cpp is the MATLAB wrapper for the C++ codes (km_config.h and km_config.cpp)
-
   * matlab/makefile is the makefile for the MATLAB codes. 
-  
   * matlab/example.m is a usage example.
    
 
