@@ -4,8 +4,9 @@ An algorithm for finding multiple core-periphery pairs in networks.
 
 MATLAB and C++ codes for the KM--config algorithm.
 
-Please cite
-  Kojaku, S. and Masuda, N. ???. Preprint arXiv:???? (2017).
+Please cite  
+  Kojaku, S. and Masuda, N. ???. Preprint arXiv:???? (2017).  
+
 ---
 Directory cpp/ contains C++ codes.
       
@@ -18,6 +19,7 @@ Directory cpp/ contains C++ codes.
   cpp/makefile is the makefile for the C++ codes. 
 
   cpp/example_edge_list.txt is an edge list of a network consisting of two idealised core-periphery pairs.
+
 ---
 Directory matlab/ contains the MATLAB wrapper for the C++ codes.
   
@@ -86,6 +88,7 @@ C++
     To find significant core-periphery pairs at a significance level of 0.05, type
  
       ./km_config example_edge_list.txt result.txt -a 0.05 
+
 ---
 MATLAB  
       
@@ -151,5 +154,6 @@ MATLAB
   REQUIREMENT: 
       
     MATLAB 2012 or later.
+
 ---
 Last updated: 14 October 2017
