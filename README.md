@@ -1,5 +1,5 @@
 # km_config
-This repository contains C++ and MATLAB codes for the KM--config algorithm.
+MATLAB and C++ codes for the KM--config algorithm.
 
 Please cite  
   Kojaku, S. and Masuda, N. ???. Preprint arXiv:???? (2017).  
