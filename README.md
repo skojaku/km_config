@@ -1,5 +1,5 @@
 # km_config
-C++ and MATLAB codes for the KM--config algorithm.
+This repository contains C++ and MATLAB codes for the KM--config algorithm.
 
 Please cite  
   Kojaku, S. and Masuda, N. ???. Preprint arXiv:???? (2017).  
@@ -63,7 +63,7 @@ Directory matlab/ contains the MATLAB wrapper for the C++ codes.
 * -l N  
 Set the number of randomised networks to N. (Default: 500)
 * -d "D"  
-Set the delimiter of [input-file] and [output-file] as D. (Default: space)  
+Change the delimiter of [input-file] and [output-file] to D. (Default: space)  
 
 
  ### EXAMPLES:

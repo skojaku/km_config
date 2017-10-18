@@ -44,9 +44,6 @@ C++
 
     km_config [input-file] [output-file] [options]
   
-  
-  DESCRIPTION:
-
     km_config seeks multiple core-periphery pairs in the network given by [input-file] and
     saves the detected core-periphery pairs in [output-file].
   
@@ -62,15 +59,15 @@ C++
       The fourth column indicates whether each node belongs to a significant core-periphery pair (= 1) or not (= 0).
   
   
-  OPTIONS:
+    [options] 
   
-    -r R  Run the KM-config algorithm R times. (Default: 10)
+      -r R  Run the KM-config algorithm R times. (Default: 10)
   
-    -a ALPHA  Set the significance level before the Šidák correction to ALPHA. (Default: 1). If this option is not set, the statistical test is not carried out.
+      -a ALPHA  Set the significance level before the Šidák correction to ALPHA. (Default: 1). If this option is not set, the statistical test is not carried out.
   
-    -l N  Set the number of randomised networks to N. (Default: 500)
+      -l N  Set the number of randomised networks to N. (Default: 500)
   
-    -d "D"  Set the delimiter of [input-file] and [output-file] as D. (Default: space)  
+      -d "D"  Change the delimiter of [input-file] and [output-file] to D. (Default: space)  
 
 
   EXAMPLES:
