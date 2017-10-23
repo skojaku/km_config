@@ -4,7 +4,9 @@
 *
 *
 * An algorithm for finding multiple core-periphery pairs in networks
-* "Core-periphery structure requires something else in the network"
+*
+*
+* Core-periphery structure requires something else in the network
 * Sadamori Kojaku and Naoki Masuda
 * Preprint arXiv:1710.07076
 * 

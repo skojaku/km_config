@@ -63,7 +63,7 @@ Directory matlab/ contains the MATLAB wrapper for the C++ codes.
 * -l N  
 Set the number of randomised networks to N. (Default: 500)
 * -d "D"  
-Change the delimiter of [input-file] and [output-file] to D. (Default: space)  
+Change the delimiter for [input-file] and [output-file] to D. (Default: space)  
 
 
  ### EXAMPLES:

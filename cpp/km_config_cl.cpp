@@ -4,7 +4,9 @@
 *
 *
 * An algorithm for finding multiple core-periphery pairs in networks
-* "Core-periphery structure requires something else in the network"
+*
+*
+* Core-periphery structure requires something else in the network
 * Sadamori Kojaku and Naoki Masuda
 * Preprint arXiv:1710.07076
 * 
@@ -24,7 +26,7 @@
 #include <stdio.h>
 #include <unistd.h>
 
-char delimiter = ' '; // the delimiter between values in the [input-file] and [output-file]
+char delimiter = ' '; // the delimiter for the [input-file] and [output-file]
 
 void split(const string& s, char c,
     vector<string>& v);
@@ -191,7 +193,7 @@ void usage()
          << endl
          << "  \e[1m-l NUM\e[0m  Set the number of randomised networks to NUM. (Default: 500)" << endl
          << endl
-         << "  \e[1m-d \"D\"\e[0m  Change the delimiter between values in [input-file] and [output-file] to D. (Default: space)" << endl
+         << "  \e[1m-d \"D\"\e[0m  Change the delimiter for [input-file] and [output-file] to D. (Default: space)" << endl
          << endl
          << endl;
 }

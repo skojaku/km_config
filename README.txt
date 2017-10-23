@@ -1,7 +1,7 @@
 MATLAB and C++ codes for the KM-config algorithm.
 
 Please cite
-  Kojaku, S. and Masuda, N. "Core-periphery structure requires somthing else in the network". Preprint arXiv:1710.07076 (2017).
+  Kojaku, S. and Masuda, N. Core-periphery structure requires somthing else in the network. Preprint arXiv:1710.07076 (2017).
 ———————————————————————————————————————————————————————————————————————————
 Directory cpp/ contains C++ codes.
       
@@ -67,7 +67,7 @@ C++
   
       -l N  Set the number of randomised networks to N. (Default: 500)
   
-      -d "D"  Change the delimiter of [input-file] and [output-file] to D. (Default: space)  
+      -d "D"  Change the delimiter for [input-file] and [output-file] to D. (Default: space)  
 
 
   EXAMPLES:
