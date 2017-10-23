@@ -44,6 +44,7 @@ using namespace std;
 std::mt19937_64 mtrnd;
 uniform_real_distribution<double> udist(0.0, 1.0);
 
+
 /* 
 *
 * This function initialises mtrnd. 
@@ -51,10 +52,11 @@ uniform_real_distribution<double> udist(0.0, 1.0);
 */
 void init_random_number_generator();
 
-/* ---- KM algorithm ----
+
+/* ---- KM-config algorithm ----
 * INPUT:
 *
-*   A[i][j] - Adjacency matrix. A[i][j] is the node id of the jth neighbour of node i.
+*   A[i][j] - Adjacency matrix. A[i][j] is the node id of the j-th neighbour of node i.
 *
 *   num_of_runs - number of times we run the KM-config algorithm.
 *
@@ -76,10 +78,11 @@ void km_config_label_switching(const vector<vector<int> >& A,
     double& Q,
     vector<double>& q);
 
+
 /* ---- Quaity function Qconf ----
 * INPUT:
 *
-*   A[i][j] - Adjacency matrix. A[i][j] is the node id of the jth neighbour of node i.
+*   A[i][j] - Adjacency matrix. A[i][j] is the node id of the j-th neighbour of node i.
 *
 *   c - N-dimensional vector. c[i] is the index of the core-periphery pair to which node i belongs.
 *  
@@ -99,10 +102,11 @@ void calc_Qconf(const vector<vector<int> >& A,
     double& Q,
     vector<double>& q);
 
+
 /* ---- Statistical significance of core-periphery pairs ----
 * INPUT
 *
-*   A[i][j] - Adjacency matrix. A[i][j] is the node id of the jth neighbour of node i.
+*   A[i][j] - Adjacency matrix. A[i][j] is the node id of the j-th neighbour of node i.
 *
 *   c - N-dimensional vector. c[i] is the index of the core-periphery pair to which node i belongs.
 *  
