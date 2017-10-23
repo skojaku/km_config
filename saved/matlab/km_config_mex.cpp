@@ -3,9 +3,9 @@
 * MATLAB wrapper for the C++ codes of the KM-config algorithm (km_config.h and km_config.cpp)
 *
 *
-* "Core-periphery structure requires something else in the network"
+* "???"
 * Sadamori Kojaku and Naoki Masuda
-* Preprint arXiv:1710.07076
+* Preprint arXiv:???
 * 
 *
 * Please do not distribute without contacting the authors.

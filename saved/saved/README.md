@@ -2,7 +2,7 @@
 MATLAB and C++ codes for the KM--config algorithm.
 
 Please cite  
-  Kojaku, S. and Masuda, N. "Core-periphery structure requires somthing else in the network". Preprint arXiv:1710.07076 (2017).
+  Kojaku, S. and Masuda, N. ???. Preprint arXiv:???? (2017).  
 
 
 ## Files
