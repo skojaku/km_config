@@ -45,8 +45,10 @@ Directory matlab/ contains the MATLAB wrapper for the C++ codes.
   
 **[input-file]**  
  * The file should contain a list of edges (space-separated).  
- * The first and second columns represent the IDs of the two nodes forming an edge.    
- * The node's ID is assumed to start from 1.  
+ * The first and second columns represent the IDs of the two nodes forming an edge.
+ * The third column represents the weight of the edge between the two nodes. 
+ * If the third column is not provided, then the weight is set to 1.  
+ * The node's ID is assumed to start from 1. You can change this by [options], e.g., -i 0.
   
 **[output_file]**  
  * The first column represents the node's ID.
@@ -62,6 +64,8 @@ Directory matlab/ contains the MATLAB wrapper for the C++ codes.
   Set the significance level before the Šidák correction to ALPHA. (Default: 1). If this option is not set, the statistical test is not carried out.
 * -l N  
 Set the number of randomised networks to N. (Default: 500)
+* -i I
+The node's ID starts from I. (Default: 1)
 * -d "D"  
 Change the delimiter for [input-file] and [output-file] to D. (Default: space)  
 
@@ -142,5 +146,3 @@ To find significant core-periphery pairs at a significance level of 0.05, type
 
 ---
 Last updated: 17 October 2017
-
-

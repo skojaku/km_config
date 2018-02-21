@@ -31,9 +31,10 @@ char delimiter = ' '; // the delimiter for the [input-file] and [output-file]
 void split(const string& s, char c,
     vector<string>& v);
 
-void readEdgeTable(string filename, vector<vector<int> >& A, int& N);
+void readEdgeTable(string filename, vector<vector<int> >& A, vector<vector<double>>& W, int& N, int startIndex);
+//void readEdgeTable(string filename, vector<vector<int> >& A, int& N);
 
-void writeLabels(const string filename, const vector<int>& c, const vector<bool>& x, const vector<double> p_values, const double pval);
+void writeLabels(const string filename, const vector<int>& c, const vector<bool>& x, const vector<double> p_values, const double pval, int startIndex);
 
 void usage();
 
@@ -84,11 +85,12 @@ int main(int argc, char* argv[])
     double alpha = 1.0;
     int num_of_runs = 10;
     int num_of_rand_nets = 500;
-
+    int startIndex = 1;
+   
     int opt;
     opterr = 0;
     string tmp;
-    while ((opt = getopt(argc, argv, "hr:a:l:d:")) != -1) {
+    while ((opt = getopt(argc, argv, "hi:r:a:l:d:")) != -1) {
         switch (opt) {
         case 'h':
             usage();
@@ -104,6 +106,10 @@ int main(int argc, char* argv[])
         case 'l':
             tmp.assign(optarg);
             num_of_rand_nets = atoi(tmp.c_str());
+            break;
+        case 'i':
+            tmp.assign(optarg);
+            startIndex = atoi(tmp.c_str());
             break;
         case 'd':
             tmp.assign(optarg);
@@ -123,8 +129,9 @@ int main(int argc, char* argv[])
    
     /* Read file */
     int N;
-    vector<vector<int> > A;
-    readEdgeTable(linkfile, A, N);
+    vector<vector<int>> A;
+    vector<vector<double>> W;
+    readEdgeTable(linkfile, A, W, N, startIndex);
 
     /* Run the KM algorithm */
     vector<int> c(N);
@@ -133,20 +140,19 @@ int main(int argc, char* argv[])
     vector<double> q;
     srand(time(NULL));
     init_random_number_generator();
-    km_config_label_switching(A, num_of_runs, c, x, Q, q);
+    km_config_label_switching(A, W, num_of_runs, c, x, Q, q);
 
     /* Statistical test */
     int K = q.size();
     vector<double> p_values(K);
     fill(p_values.begin(), p_values.end(), 0.0);
     if (alpha < 1.0) {
-        estimate_statistical_significance(A, c, x, num_of_runs, num_of_rand_nets, p_values);
+        estimate_statistical_significance(A, W, c, x, num_of_runs, num_of_rand_nets, p_values);
     }
 
     /* Save results */
     double corrected_pval = 1.0 - pow(1.0 - alpha, 1.0 / (double)K);
-    writeLabels(outputfile, c, x, p_values, corrected_pval);
-
+    writeLabels(outputfile, c, x, p_values, corrected_pval, startIndex);
     return 0;
 }
 
@@ -174,7 +180,9 @@ void usage()
     cout << "  \e[1m[input-file]\e[0m" << endl;
     cout << "    The file should contain a list of edges (space-separated)." << endl;
     cout << "    The first and second columns represent the IDs of the two nodes forming an edge." << endl;
-    cout << "    The node's ID is assumed to start from 1." << endl
+    cout << "    The third column represent the weight of edgde between the two nodes." << endl;
+    cout << "    If the third column is not provided, then the weight is set to 1" << endl;
+    cout << "    The node's ID is assumed to start from 1. (you can change this by setting option, e.g., -i 0)" << endl
          << endl;
 
     cout << "  \e[1m[output_file]\e[0m" << endl;
@@ -192,6 +200,8 @@ void usage()
          << "            If this option is not set, the statistical test is not carried out."<< endl
          << endl
          << "  \e[1m-l NUM\e[0m  Set the number of randomised networks to NUM. (Default: 500)" << endl
+         << endl
+         << "  \e[1m-i NUM\e[0m  The node's ID starts from NUM. (Default: 1)" << endl
          << endl
          << "  \e[1m-d \"D\"\e[0m  Change the delimiter for [input-file] and [output-file] to D. (Default: space)" << endl
          << endl
@@ -214,11 +224,12 @@ void split(const string& s, char c,
     }
 }
 
-void readEdgeTable(string filename, vector<vector<int> >& A, int& N)
+void readEdgeTable(string filename, vector<vector<int>>& A, vector<vector<double>>& W, int& N, int startIndex)
 {
 
     std::ifstream ifs(filename);
     vector<int> edgeList;
+    vector<double> wList;
     string str;
     N = 0;
     edgeList.clear();
@@ -226,8 +237,13 @@ void readEdgeTable(string filename, vector<vector<int> >& A, int& N)
         vector<string> v;
         split(str, delimiter, v);
 
-        int sid = stoi(v[0]) - 1;
-        int did = stoi(v[1]) - 1;
+        int sid = stoi(v[0]) - startIndex;
+        int did = stoi(v[1]) - startIndex;
+	double w = 1;
+	
+	if(v.size()>2){
+        	w = stof(v[2]);
+	}
 
         if (sid == did)
             continue;
@@ -236,41 +252,37 @@ void readEdgeTable(string filename, vector<vector<int> >& A, int& N)
             N = sid;
         if (N < did)
             N = did;
-        vector<int> tmp;
         edgeList.push_back(sid);
         edgeList.push_back(did);
+        wList.push_back(w);
     }
     N = N + 1;
+   
+    vector<vector<int>>tmp(N);
+    A = tmp; 
+    vector<vector<double>>tmp2(N);
+    W = tmp2; 
 
-    vector<int> eids;
+    int wid = 0; 
     for (int i = 0; i < edgeList.size(); i += 2) {
         int sid = edgeList[i];
         int did = edgeList[i + 1];
-        eids.push_back(MIN(sid, did) + N * MAX(sid, did));
-    }
-    sort(eids.begin(), eids.end());
-    eids.erase(unique(eids.begin(), eids.end()), eids.end());
-
-    for (int i = 0; i < N; i++) {
-        vector<int> tmp;
-        A.push_back(tmp);
-    }
-
-    for (int i = 0; i < eids.size(); i++) {
-        int sid = eids[i] % N;
-        int did = (eids[i] - sid) / N;
+	double w = wList[wid];
+	wid++;
         A[sid].push_back(did);
         A[did].push_back(sid);
+        W[sid].push_back(w);
+        W[did].push_back(w);
     }
 }
 
-void writeLabels(const string filename, const vector<int>& c, const vector<bool>& x, const vector<double> p_values, const double pval)
+void writeLabels(const string filename, const vector<int>& c, const vector<bool>& x, const vector<double> p_values, const double pval, int startIndex)
 {
     FILE* fid = fopen(filename.c_str(), "w");
     fprintf(fid, "id%cc%cx%csig\n", delimiter, delimiter, delimiter);
     int cid = 0;
     for (int i = 0; i < c.size(); i++) {
-        fprintf(fid, "%d%c%d%c%d%c%d\n", i + 1, delimiter, c[i] + 1, delimiter, !!(x[i]), delimiter, !!(p_values[c[i]] <= pval));
+        fprintf(fid, "%d%c%d%c%d%c%d\n", i + startIndex, delimiter, c[i] + startIndex, delimiter, !!(x[i]), delimiter, !!(p_values[c[i]] <= pval));
     }
     fclose(fid);
 }

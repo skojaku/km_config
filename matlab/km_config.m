@@ -28,9 +28,9 @@ if nargin == 4; num_of_rand_nets = varargin{3}; end
 
 if alpha > 1-1e-4; num_of_rand_nets = 0; end
 
-[node_ids1, node_ids2] = find(triu(A, 1));
+[node_ids1, node_ids2, w] = find(triu(A, 1));
 N = size(A, 1);
-[cids, x, Q, q, p_vals] = km_config_mex([node_ids1, node_ids2], N, length(node_ids1), num_of_runs, num_of_rand_nets);
+[cids, x, Q, q, p_vals] = km_config_mex([node_ids1, node_ids2, w], N, length(node_ids1), num_of_runs, num_of_rand_nets);
 	
 if alpha > 1-1e-4; return; end % 
 	

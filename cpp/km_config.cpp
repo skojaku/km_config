@@ -33,7 +33,9 @@ double calc_dQ(double d_i_c,
     const double M);
 
 
-void propose_new_label(const vector<vector<int> >& A,
+void propose_new_label(
+    const vector<vector<int>>& A,
+    const vector<vector<double>>& W,
     const vector<int>& c,
     const vector<bool>& x,
     const vector<double>& sum_of_deg_core,
@@ -45,7 +47,9 @@ void propose_new_label(const vector<vector<int> >& A,
     double& dQ);
 
 
-void km_config_label_switching_core(const vector<vector<int> >& A,
+void km_config_label_switching_core(
+    const vector<vector<int>>& A,
+    const vector<vector<double>>& W,
     vector<int>& c,
     vector<bool>& x);
 
@@ -54,12 +58,16 @@ void km_config_label_switching_core(const vector<vector<int> >& A,
 double normcdf(double value);
 
 
-void generate_randomised_net(vector<double>& deg,
-    vector<vector<int> >& A);
+void generate_randomised_net(
+    vector<double>& deg,
+    vector<vector<int>>& A,
+    vector<vector<double>>& W);
 
 
 /* Implementation codes */
-void km_config_label_switching(const vector<vector<int> >& A,
+void km_config_label_switching(
+    const vector<vector<int>>& A,
+    const vector<vector<double>>& W,
     const int num_of_runs,
     vector<int>& c,
     vector<bool>& x,
@@ -74,9 +82,9 @@ void km_config_label_switching(const vector<vector<int> >& A,
         vector<double> qi;
         double Qi = 0.0;
 
-        km_config_label_switching_core(A, ci, xi);
+        km_config_label_switching_core(A, W, ci, xi);
 
-        calc_Qconf(A, ci, xi, Qi, qi);
+        calc_Qconf(A, W, ci, xi, Qi, qi);
 
         if (Qi > Q) {
             c = ci;
@@ -88,7 +96,9 @@ void km_config_label_switching(const vector<vector<int> >& A,
 }
 
 
-void estimate_statistical_significance(const vector<vector<int> >& A,
+void estimate_statistical_significance(
+    const vector<vector<int>>& A,
+    const vector<vector<double>>& W,
     const vector<int>& c,
     const vector<bool>& x,
     const int num_of_runs,
@@ -105,9 +115,9 @@ void estimate_statistical_significance(const vector<vector<int> >& A,
     vector<double> deg(N);
     fill(deg.begin(), deg.end(), 0.0);
     fill(n.begin(), n.end(), 0);
-    calc_Qconf(A, c, x, Q, q);
+    calc_Qconf(A, W, c, x, Q, q);
     for (int i = 0; i < N; i++) {
-        deg[i] = A[i].size();
+        deg[i] = accumulate(W[i].begin(), W[i].end(), 0.0);
         n[c[i]]++;
     };
 
@@ -120,15 +130,16 @@ void estimate_statistical_significance(const vector<vector<int> >& A,
     for (int it = 0; it < num_of_rand_nets; it++) {
 
         // Generate a randomised network using the configuration model.
-        vector<vector<int> > A_rand;
-        generate_randomised_net(deg, A_rand);
+        vector<vector<int>> A_rand;
+        vector<vector<double>> W_rand;
+        generate_randomised_net(deg, A_rand, W_rand);
 
         // Detect core-periphery pairs using the KM--config algorithm
         vector<int> c_rand;
         vector<bool> x_rand;
         vector<double> q_rand;
         double Q_rand;
-        km_config_label_switching(A_rand, num_of_runs, c_rand, x_rand, Q_rand, q_rand);
+        km_config_label_switching(A_rand, W_rand, num_of_runs, c_rand, x_rand, Q_rand, q_rand);
 
         // Save the quality and size of core-periphery pairs in the randomised network.
         int K_rand = q_rand.size();
@@ -182,7 +193,9 @@ void estimate_statistical_significance(const vector<vector<int> >& A,
 }
 
 
-void calc_Qconf(const vector<vector<int> >& A,
+void calc_Qconf(
+    const vector<vector<int>>& A,
+    const vector<vector<double>>& W,
     const vector<int>& c,
     const vector<bool>& x,
     double& Q,
@@ -200,9 +213,9 @@ void calc_Qconf(const vector<vector<int> >& A,
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < A[i].size(); j++) {
             int nei = A[i][j];
-            q[c[i]] += !!(c[i] == c[nei]) * !!(x[i] | x[nei]);
+            q[c[i]] += W[i][j] * !!(c[i] == c[nei]) * !!(x[i] | x[nei]);
         }
-        double di = A[i].size();
+        double di = accumulate(W[i].begin(), W[i].end(), 0.0);
         Dc[c[i]] += !!(x[i]) * di;
         Dp[c[i]] += !!(!x[i]) * di;
         double_M += di;
@@ -228,7 +241,9 @@ double calc_dQ(double d_i_c,
 }
 
 
-void propose_new_label(const vector<vector<int> >& A,
+void propose_new_label(
+    const vector<vector<int>>& A,
+    const vector<vector<double>>& W,
     const vector<int>& c,
     const vector<bool>& x,
     const vector<double>& sum_of_deg_core,
@@ -241,7 +256,7 @@ void propose_new_label(const vector<vector<int> >& A,
 {
     int N = A.size();
     int neighbourNum = A[node_id].size();
-    int deg = A[node_id].size();
+    double deg = accumulate(W[node_id].begin(), W[node_id].end(), 0.0);
     vector<double> edges_to_core(N);
     vector<double> edges_to_peri(N);
 
@@ -256,13 +271,13 @@ void propose_new_label(const vector<vector<int> >& A,
 		continue;
 	}
 	
-        edges_to_core[c[nei]] += (double)!!(x[nei]);
-        edges_to_peri[c[nei]] += (double)!!(!x[nei]);
+        edges_to_core[c[nei]] += W[node_id][j] * (double)!!(x[nei]);
+        edges_to_peri[c[nei]] += W[node_id][j] * (double)!!(!x[nei]);
     }
 
     double D_core = sum_of_deg_core[c[node_id]] - deg * (double)!!(x[node_id]);
     double D_peri = sum_of_deg_peri[c[node_id]] - deg * (double)!!(!x[node_id]);
-    double dQold = calc_dQ(edges_to_core[c[node_id]], edges_to_peri[c[node_id]], A[node_id].size(),
+    double dQold = calc_dQ(edges_to_core[c[node_id]], edges_to_peri[c[node_id]], deg,
         D_core, D_peri, selfloop, x[node_id], M);
 
     dQ = 0;
@@ -308,7 +323,9 @@ double normcdf(double value)
 }
 
 
-void km_config_label_switching_core(const vector<vector<int> >& A,
+void km_config_label_switching_core(
+    const vector<vector<int>>& A,
+    const vector<vector<double>>& W,
     vector<int>& c,
     vector<bool>& x)
 {
@@ -317,6 +334,7 @@ void km_config_label_switching_core(const vector<vector<int> >& A,
     vector<double> sum_of_deg_core(N);
     vector<double> sum_of_deg_peri(N);
     vector<int> order(N);
+    vector<double> degs(N);
     double M = 0;
     bool isupdated = false;
     fill(sum_of_deg_core.begin(), sum_of_deg_core.end(), 0.0);
@@ -328,7 +346,8 @@ void km_config_label_switching_core(const vector<vector<int> >& A,
     for (int i = 0; i < N; i++) {
         order[i] = i;
         c[i] = i;
-        double deg = A[i].size();
+        double deg = accumulate(W[i].begin(), W[i].end(), 0.0);
+	degs[i] = deg;
         sum_of_deg_core[i] += (double)!!(x[i]) * deg;
         M += deg;
     };
@@ -346,7 +365,7 @@ void km_config_label_switching_core(const vector<vector<int> >& A,
             bool xprime = x[i]; // x'
 
             double dQ = 0;
-            propose_new_label(A, c, x, sum_of_deg_core, sum_of_deg_peri,
+            propose_new_label(A, W, c, x, sum_of_deg_core, sum_of_deg_peri,
                 M, i, cprime, xprime, dQ);
 
             if (dQ <= 0)
@@ -355,7 +374,7 @@ void km_config_label_switching_core(const vector<vector<int> >& A,
             if (c[i] == cprime & x[i] == xprime)
                 continue;
 
-            double deg = A[i].size();
+            double deg = degs[i];
             if (x[i]) {
                 sum_of_deg_core[c[i]] -= deg;
             }
@@ -398,28 +417,36 @@ void km_config_label_switching_core(const vector<vector<int> >& A,
 }
 
 
-void generate_randomised_net(vector<double>& deg,
-    vector<vector<int> >& A)
+void generate_randomised_net(
+    vector<double>& deg,
+    vector<vector<int>>& A,
+    vector<vector<double>>& W)
 {
     int N = deg.size();
-    int M = accumulate(deg.begin(), deg.end(), 0.0);
+    double M = accumulate(deg.begin(), deg.end(), 0.0);
     M /= 2;
     A.clear();
+    W.clear();
     for (int i = 0; i < N; i++) {
         vector<int> tmp;
         A.push_back(tmp);
+        vector<double> tmp2;
+        W.push_back(tmp2);
     }
+
+    double rnd = 0;
     for (int i = 0; i < N; i++) {
-        if ((udist(mtrnd)) <= deg[i] * deg[i] / (4.0 * (double)M)){
-            A[i].push_back(i);
-            A[i].push_back(i);
-	}
-        
-	for (int j = i + 1; j < N; j++) {
-            if ((udist(mtrnd)) > deg[i] * deg[j] / (2.0 * (double)M))
-                continue;
+        for (int j = i; j < N; j++) {
+            poisson_distribution<int> distribution(deg[i] * deg[j] / (2.0 * (double)M));
+            rnd = distribution(mtrnd);
+            if (rnd <1 ) continue;
             A[i].push_back(j);
+            W[i].push_back((double)rnd);
+            
+            if(i == j) continue;
+                
             A[j].push_back(i);
+            W[j].push_back((double)rnd);
         }
     }
 }

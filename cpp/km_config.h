@@ -58,6 +58,8 @@ void init_random_number_generator();
 *
 *   A[i][j] - Adjacency matrix. A[i][j] is the node id of the j-th neighbour of node i.
 *
+*   W[i][j] - Weight matrix. W[i][j] is the weight of edges between node i and the jth neighbour.
+*
 *   num_of_runs - number of times we run the KM-config algorithm.
 *
 *
@@ -71,7 +73,9 @@ void init_random_number_generator();
 *  
 *   q - C-dimensional vector. q[i] represents the contribution of the i-th core-periphery pair to Q.
 */
-void km_config_label_switching(const vector<vector<int> >& A,
+void km_config_label_switching(
+    const vector<vector<int>>& A,
+    const vector<vector<double>>& W,
     const int num_of_runs,
     vector<int>& c,
     vector<bool>& x,
@@ -83,6 +87,8 @@ void km_config_label_switching(const vector<vector<int> >& A,
 * INPUT:
 *
 *   A[i][j] - Adjacency matrix. A[i][j] is the node id of the j-th neighbour of node i.
+*
+*   W[i][j] - Weight matrix. W[i][j] is the weight of edges between node i and the jth neighbour.
 *
 *   c - N-dimensional vector. c[i] is the index of the core-periphery pair to which node i belongs.
 *  
@@ -96,7 +102,9 @@ void km_config_label_switching(const vector<vector<int> >& A,
 *   q - C-dimensional vector. q[i] represents the contribution of the i-th core-periphery pair to Q.
 *
 */
-void calc_Qconf(const vector<vector<int> >& A,
+void calc_Qconf(
+    const vector<vector<int>>& A,
+    const vector<vector<double>>& W,
     const vector<int>& c,
     const vector<bool>& x,
     double& Q,
@@ -107,6 +115,8 @@ void calc_Qconf(const vector<vector<int> >& A,
 * INPUT
 *
 *   A[i][j] - Adjacency matrix. A[i][j] is the node id of the j-th neighbour of node i.
+*
+*   W[i][j] - Weight matrix. W[i][j] is the weight of edges between node i and the jth neighbour.
 *
 *   c - N-dimensional vector. c[i] is the index of the core-periphery pair to which node i belongs.
 *  
@@ -122,7 +132,9 @@ void calc_Qconf(const vector<vector<int> >& A,
 *   p_values - C-dimensional vector. p_values[i] represents the p-value of the i-th core-periphery pair. 
 *
 */
-void estimate_statistical_significance(const vector<vector<int> >& A,
+void estimate_statistical_significance(
+    const vector<vector<int> >& A,
+    const vector<vector<double> >& W,
     const vector<int>& c,
     const vector<bool>& x,
     const int num_of_runs,

@@ -55,19 +55,19 @@ void mexFunction(int nlhs, mxArray* plhs[],
     int num_of_rand_nets = (int)mxGetPr(prhs[4])[0];
 
     /* Parse Input */
-    vector<vector<int> > A;
-    for (int i = 0; i < N; i++) {
-        vector<int> tmp;
-        A.push_back(tmp);
-    }
+    vector<vector<int>> A(N, vector<int>(0));
+    vector<vector<double>> W(N, vector<double>(0));
 
     for (int i = 0; i < Enum; i++) {
         int rid = (edgeList[i] - 1);
         int cid = (edgeList[i + (int)Enum] - 1);
+        double w = edgeList[i + 2*(int)Enum];
         A[rid].push_back(cid);
+        W[rid].push_back(w);
 
         if (rid != cid) {
             A[cid].push_back(rid);
+            W[cid].push_back(w);
         }
     }
 
@@ -76,13 +76,13 @@ void mexFunction(int nlhs, mxArray* plhs[],
     double Q;
     vector<double> Qs;
     init_random_number_generator();
-    km_config_label_switching(A, num_of_runs, c, x, Q, Qs);
+    km_config_label_switching(A, W, num_of_runs, c, x, Q, Qs);
 
     
     int K = Qs.size();
     vector<double> p_values;
     if(num_of_rand_nets>=1){
-    	estimate_statistical_significance(A, c, x, num_of_runs, num_of_rand_nets, p_values);
+    	estimate_statistical_significance(A, W, c, x, num_of_runs, num_of_rand_nets, p_values);
     }else{
 	p_values.assign(K,1.0);
     }
