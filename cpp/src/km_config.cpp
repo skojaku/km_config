@@ -149,7 +149,7 @@ void estimate_statistical_significance(
     vector<int> nhat;
     vector<double> qhat;
     #ifdef _OPENMP
-    #pragma omp parallel for shared(nhat, qhat, deg)
+    #pragma omp parallel for shared(nhat, qhat, deg, mtrnd_list)
     #endif
     for (int it = 0; it < num_of_rand_nets; it++) {
 
