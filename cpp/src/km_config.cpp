@@ -44,25 +44,22 @@ void propose_new_label(
     const int node_id,
     int& cprime,
     bool& xprime,
-    double& dQ);
+    double& dQ,
+    mt19937_64& mtrnd
+    );
 
 
 void km_config_label_switching_core(
     const vector<vector<int>>& A,
     const vector<vector<double>>& W,
     vector<int>& c,
-    vector<bool>& x);
+    vector<bool>& x,
+    mt19937_64& mtrnd
+    );
 
 
 // Private functions for estimate_statistical_significance
 double normcdf(double value);
-
-
-void generate_randomised_net(
-    vector<double>& deg,
-    vector<vector<int>>& A,
-    vector<vector<double>>& W);
-
 
 /* Implementation codes */
 void km_config_label_switching(
@@ -72,7 +69,9 @@ void km_config_label_switching(
     vector<int>& c,
     vector<bool>& x,
     double& Q,
-    vector<double>& q)
+    vector<double>& q,
+    mt19937_64& mtrnd
+    )
 {
 
     Q = -1;
@@ -82,7 +81,7 @@ void km_config_label_switching(
         vector<double> qi;
         double Qi = 0.0;
 
-        km_config_label_switching_core(A, W, ci, xi);
+        km_config_label_switching_core(A, W, ci, xi, mtrnd);
 
         calc_Qconf(A, W, ci, xi, Qi, qi);
 
@@ -107,6 +106,8 @@ void estimate_statistical_significance(
 {
 
     /* Initialise variables */
+    bool noSelfloop = false;
+    bool isunweighted = false;
     int K = *max_element(c.begin(), c.end()) + 1;
     int N = A.size();
     double Q;
@@ -120,8 +121,31 @@ void estimate_statistical_significance(
         deg[i] = accumulate(W[i].begin(), W[i].end(), 0.0);
         n[c[i]]++;
     };
+    vector<int> deg_rank(N); // deg_rank[k] is the id of the node with the kth largest degree. 
+    iota(deg_rank.begin(), deg_rank.end(), 0);
+    sort(
+        deg_rank.begin(),
+        deg_rank.end(),
+        [&](int x, int y){return deg[x] > deg[y];}
+    );
+
 
     /* Generate \hat q^{(s)} and \hat n^{(s)} (1 \leq s \leq S) */
+    int numthread;// create random number generator per each thread
+    # pragma omp parallel
+    {
+    	numthread = omp_get_num_threads();
+    }
+    vector<mt19937_64> mtrnd_list(numthread);
+    for(int i = 0; i < numthread; i++){
+	mt19937_64 mtrnd;
+    	random_device r;
+    	seed_seq seed{ r(), r(), r(), r(), r(), r(), r(), r() };
+    	mtrnd.seed(seed);
+	mtrnd_list[i] = mtrnd;
+    }
+ 
+
     vector<int> nhat;
     vector<double> qhat;
     #ifdef _OPENMP
@@ -132,14 +156,17 @@ void estimate_statistical_significance(
         // Generate a randomised network using the configuration model.
         vector<vector<int>> A_rand;
         vector<vector<double>> W_rand;
-        generate_randomised_net(deg, A_rand, W_rand);
+        int tid = omp_get_thread_num();
+        mt19937_64 mtrnd = mtrnd_list[tid];
+
+	Chung_Lu_Algorithm(deg, deg_rank, A_rand, W_rand, noSelfloop, isunweighted, mtrnd);
 
         // Detect core-periphery pairs using the KM--config algorithm
         vector<int> c_rand;
         vector<bool> x_rand;
         vector<double> q_rand;
         double Q_rand;
-        km_config_label_switching(A_rand, W_rand, num_of_runs, c_rand, x_rand, Q_rand, q_rand);
+        km_config_label_switching(A_rand, W_rand, num_of_runs, c_rand, x_rand, Q_rand, q_rand, mtrnd);
 
         // Save the quality and size of core-periphery pairs in the randomised network.
         int K_rand = q_rand.size();
@@ -211,7 +238,8 @@ void calc_Qconf(
 
     double double_M = 0.0;
     for (int i = 0; i < N; i++) {
-        for (int j = 0; j < A[i].size(); j++) {
+	int Asize = A[i].size();
+        for (int j = 0; j < Asize; j++) {
             int nei = A[i][j];
             q[c[i]] += W[i][j] * !!(c[i] == c[nei]) * !!(x[i] | x[nei]);
         }
@@ -252,7 +280,8 @@ void propose_new_label(
     const int node_id,
     int& cprime,
     bool& xprime,
-    double& dQ)
+    double& dQ,
+    mt19937_64& mtrnd)
 {
     int N = A.size();
     int neighbourNum = A[node_id].size();
@@ -285,8 +314,8 @@ void propose_new_label(
         int nei = A[node_id][j];
         int cid = c[nei];
 
-        D_core = sum_of_deg_core[cid] - deg * (double)!!(c[node_id] == cid & x[node_id]);
-        D_peri = sum_of_deg_peri[cid] - deg * (double)!!(c[node_id] == cid & !x[node_id]);
+        D_core = sum_of_deg_core[cid] - deg * (double)!!( (c[node_id] == cid) & x[node_id]);
+        D_peri = sum_of_deg_peri[cid] - deg * (double)!!( (c[node_id] == cid) & !x[node_id]);
 
         double Q_i_core = calc_dQ(edges_to_core[cid], edges_to_peri[cid],
             deg, D_core, D_peri, selfloop, true, M);
@@ -327,7 +356,9 @@ void km_config_label_switching_core(
     const vector<vector<int>>& A,
     const vector<vector<double>>& W,
     vector<int>& c,
-    vector<bool>& x)
+    vector<bool>& x,
+    mt19937_64& mtrnd
+    )
 {
     /* Variable declarations */
     int N = A.size();
@@ -366,12 +397,12 @@ void km_config_label_switching_core(
 
             double dQ = 0;
             propose_new_label(A, W, c, x, sum_of_deg_core, sum_of_deg_peri,
-                M, i, cprime, xprime, dQ);
+                M, i, cprime, xprime, dQ, mtrnd);
 
             if (dQ <= 0)
                 continue;
 
-            if (c[i] == cprime & x[i] == xprime)
+            if ( (c[i] == cprime) & (x[i] == xprime) )
                 continue;
 
             double deg = degs[i];
@@ -401,7 +432,8 @@ void km_config_label_switching_core(
     std::vector<int> labs;
     for (int i = 0; i < N; i++) {
         int cid = -1;
-        for (int j = 0; j < labs.size(); j++) {
+	int labsize = labs.size();
+        for (int j = 0; j < labsize; j++) {
             if (labs[j] == c[i]) {
                 cid = j;
                 break;
@@ -416,7 +448,7 @@ void km_config_label_switching_core(
     }
 }
 
-
+/*
 void generate_randomised_net(
     vector<double>& deg,
     vector<vector<int>>& A,
@@ -450,3 +482,4 @@ void generate_randomised_net(
         }
     }
 }
+*/

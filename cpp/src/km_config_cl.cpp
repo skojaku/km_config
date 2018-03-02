@@ -31,7 +31,7 @@ char delimiter = ' '; // the delimiter for the [input-file] and [output-file]
 void split(const string& s, char c,
     vector<string>& v);
 
-void readEdgeTable(string filename, vector<vector<int> >& A, vector<vector<double>>& W, int& N, int startIndex);
+void readEdgeTable(string filename, vector<vector<int> >& A, vector<vector<double>>& W, int& N, double& M, int& edgeNum, bool& isunweighted, bool& isSelfLoop, int startIndex);
 //void readEdgeTable(string filename, vector<vector<int> >& A, int& N);
 
 void writeLabels(const string filename, const vector<int>& c, const vector<bool>& x, const vector<double> p_values, const double pval, int startIndex);
@@ -45,32 +45,6 @@ std::string myreplace(std::string &s,
     return(s.replace(s.find(toReplace), toReplace.length(), replaceWith));
 }
 
-// initialise mtrnd
-void init_random_number_generator()
-{
-    /* If you can initialise mtrnd with random_device, use the following codes.*/
-    random_device r;
-    seed_seq seed{ r(), r(), r(), r(), r(), r(), r(), r() };
-    mtrnd.seed(seed);
-
-    /* Otherwise use the following codes */
-    /*
-	int seeds[624];
-	size_t size = 624 * 4; // Declare size of data
-	std::ifstream urandom("/dev/urandom", std::ios::in | std::ios::binary); // Open stream
-	if (urandom) // Check if stream is open
-	{
-	    urandom.read(reinterpret_cast<char*>(seeds), size); // Read from urandom
-	    urandom.close();// Close stream
-	}
-	else // Open failed
-	{
-	    std::cerr << "Failed to open /dev/urandom" << std::endl;
-	}
-	std::seed_seq seed(&seeds[0], &seeds[624]);
-	mtrnd.seed(seed);
-    */
-}
 
 int main(int argc, char* argv[])
 {
@@ -125,34 +99,73 @@ int main(int argc, char* argv[])
             break;
         }
     }
+    cout << "===================" << endl;
+    cout << "# input file:  "<< linkfile<< endl;
+    cout << "# output file: "<< outputfile<< endl;
+    cout << "" << endl;
   
    
     /* Read file */
+    cout << "# Status: "<< endl;
+    cout << "   Reading input file..."<<endl;
+    
     int N;
     vector<vector<int>> A;
     vector<vector<double>> W;
-    readEdgeTable(linkfile, A, W, N, startIndex);
+    bool isSelfLoop; 
+    bool isUnweighted;
+    double M = 0;
+    int edgeNum = 0;
+    readEdgeTable(linkfile, A, W, N, M, edgeNum, isUnweighted, isSelfLoop, startIndex);
+
+    cout << "   Number of nodes: "<< N << endl;
+    cout << "   Number of edges: "<< edgeNum << endl;
+    cout << "" << endl;
 
     /* Run the KM algorithm */
+    cout << "   Seeking core-periphery pairs..."<<endl;
+    cout << "      - Number of runs: "<< num_of_runs<< endl;
     vector<int> c(N);
     vector<bool> x(N);
     double Q;
     vector<double> q;
     srand(time(NULL));
-    init_random_number_generator();
-    km_config_label_switching(A, W, num_of_runs, c, x, Q, q);
+    mt19937_64 mtrnd;
+    random_device r;
+    seed_seq seed{ r(), r(), r(), r(), r(), r(), r(), r() };
+    mtrnd.seed(seed);
+    km_config_label_switching(A, W, num_of_runs, c, x, Q, q, mtrnd);
+    cout <<"   end"<<endl<<endl;
 
     /* Statistical test */
     int K = q.size();
     vector<double> p_values(K);
     fill(p_values.begin(), p_values.end(), 0.0);
+    double corrected_alpha =1.0 - pow(1.0 - alpha, 1.0 / (double)K); // Sidak correction.
     if (alpha < 1.0) {
+    	cout << "   Significance test..."<<endl;
+    	cout << "      - Number of random networks: "<< num_of_rand_nets<< endl;
+    	cout << "      - Significance level: "<< alpha<< endl;
+    	cout << "      - Corrected-significance level: "<< corrected_alpha<< endl;
+    	cout << "      - Number of core-periphery pairs under testing: "<< K<< endl;
         estimate_statistical_significance(A, W, c, x, num_of_runs, num_of_rand_nets, p_values);
+       	cout <<"   end"<<endl<<endl;
     }
+    cout << "   "<<endl;
+    int Ksig = 0;
+    for(int i = 0; i < K; i++){
+	if(p_values[i]<=corrected_alpha) Ksig++;
+    }
+    
+    cout << "# Results: "<< endl;
+    cout << "   Number of significant core-periphery pairs: "<< Ksig<<endl;
+    cout << "   Number of insignificant core-periphery pairs: "<< K-Ksig<<endl;
+    cout << "   Save to "<<outputfile<<"..."<<endl;
+    cout <<"   end"<<endl;
+    cout << "===================" << endl;
 
     /* Save results */
-    double corrected_pval = 1.0 - pow(1.0 - alpha, 1.0 / (double)K);
-    writeLabels(outputfile, c, x, p_values, corrected_pval, startIndex);
+    writeLabels(outputfile, c, x, p_values, corrected_alpha, startIndex);
     return 0;
 }
 
@@ -224,7 +237,7 @@ void split(const string& s, char c,
     }
 }
 
-void readEdgeTable(string filename, vector<vector<int>>& A, vector<vector<double>>& W, int& N, int startIndex)
+void readEdgeTable(string filename, vector<vector<int> >& A, vector<vector<double>>& W, int& N, double& M, int& edgeNum, bool& isUnweighted, bool& isSelfLoop, int startIndex)
 {
 
     std::ifstream ifs(filename);
@@ -245,43 +258,59 @@ void readEdgeTable(string filename, vector<vector<int>>& A, vector<vector<double
         	w = stof(v[2]);
 	}
 
-        if (sid == did)
-            continue;
-
         if (N < sid)
             N = sid;
         if (N < did)
             N = did;
+        
         edgeList.push_back(sid);
         edgeList.push_back(did);
         wList.push_back(w);
+
     }
     N = N + 1;
    
-    vector<vector<int>>tmp(N);
+    vector<vector<int>>tmp(N, vector<int>(0));
+    vector<vector<double>>tmp2(N, vector<double>(0));
     A = tmp; 
-    vector<vector<double>>tmp2(N);
     W = tmp2; 
 
-    int wid = 0; 
-    for (int i = 0; i < edgeList.size(); i += 2) {
+   
+    int wid = 0;
+    int edgeListSize = edgeList.size();
+    M = 0; 
+    isSelfLoop = false; 
+    isUnweighted = true; 
+    for (int i = 0; i < edgeListSize; i += 2) {
         int sid = edgeList[i];
         int did = edgeList[i + 1];
 	double w = wList[wid];
+
 	wid++;
-        A[sid].push_back(did);
-        A[did].push_back(sid);
-        W[sid].push_back(w);
-        W[did].push_back(w);
+	
+	if(sid == did){
+        	A[sid].push_back(did);
+        	W[sid].push_back(w);
+		M+=w;
+		isSelfLoop = true;
+	}else{
+        	A[sid].push_back(did);
+        	A[did].push_back(sid);
+        	W[sid].push_back(w);
+        	W[did].push_back(w);
+		M+=w;
+	}
+        isUnweighted = isUnweighted & (abs(w-1.0)<=1e-20);	
     }
+    edgeNum = wid;
 }
 
 void writeLabels(const string filename, const vector<int>& c, const vector<bool>& x, const vector<double> p_values, const double pval, int startIndex)
 {
     FILE* fid = fopen(filename.c_str(), "w");
     fprintf(fid, "id%cc%cx%csig\n", delimiter, delimiter, delimiter);
-    int cid = 0;
-    for (int i = 0; i < c.size(); i++) {
+    int csize = c.size();
+    for (int i = 0; i < csize; i++) {
         fprintf(fid, "%d%c%d%c%d%c%d\n", i + startIndex, delimiter, c[i] + startIndex, delimiter, !!(x[i]), delimiter, !!(p_values[c[i]] <= pval));
     }
     fclose(fid);

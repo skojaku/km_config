@@ -2,13 +2,15 @@
 .PHONY: all
 
 MEXFLAGS := -fopenmp
-
 MEXOFLAGS := -O3
+
+#MEXCOMPILER := gcc
+MEXCOMPILER := g++-4.7
 
 all: km_config_mex.mexa64
 
-km_config_mex.mexa64: km_config_mex.cpp ../cpp/km_config.h ../cpp/km_config.cpp
-	mex CXXFLAGS='$$CXXFLAGS $(MEXFLAGS)' LDFLAGS='$$LDFLAGS $(MEXFLAGS)' CXXOPTIMFLAGS='$(MEXOFLAGS) -DNDEBUG' LDOPTIMFLAGS='$(MEXOFLAGS)' km_config_mex.cpp
+km_config_mex.mexa64: src/km_config_mex.cpp ../cpp/src/km_config.h ../cpp/src/km_config.cpp
+	mex CXXFLAGS='$$CXXFLAGS $(MEXFLAGS)' LDFLAGS='$$LDFLAGS $(MEXFLAGS)' CXXOPTIMFLAGS='$(MEXOFLAGS) -DNDEBUG' LDOPTIMFLAGS='$(MEXOFLAGS)' GCC='$(MEXCOMPILER)' src/km_config_mex.cpp
 
 .PHONY: clean
 clean:

@@ -19,31 +19,13 @@
 *
 * COMPILE:
 * 
-*   mex CXXFLAGS='$CXXFLAGS -fopenmp' LDFLAGS='$LDFLAGS -fopenmp' CXXOPTIMFLAGS='-O3 -DNDEBUG' LDOPTIMFLAGS='-O3' km_config_mex.cpp
+*   mex CXXFLAGS='$CXXFLAGS -fopenmp' LDFLAGS='$LDFLAGS -fopenmp' CXXOPTIMFLAGS='-O3 -DNDEBUG' LDOPTIMFLAGS='-O3'  GCC='g++' src/km_config_mex.cpp
 * 
 */
 
-#include "../cpp/km_config.h"
-#include "../cpp/km_config.cpp"
+#include "../../cpp/src/km_config.h"
+#include "../../cpp/src/km_config.cpp"
 #include "mex.h"
-
-void init_random_number_generator(){
-	int seeds[624];
-	size_t size = 624*4; //Declare size of data
-	std::ifstream urandom("/dev/urandom", std::ios::in | std::ios::binary); //Open stream
-	if (urandom) //Check if stream is open
-	{
-	    urandom.read(reinterpret_cast<char*>(seeds), size); //Read from urandom
-	    urandom.close(); //close stream
-	}
-	else //Open failed
-	{
-	    		std::cerr << "Failed to open /dev/urandom" << std::endl;
-	}
-	std::seed_seq seed(&seeds[0], &seeds[624]);
-	mtrnd.seed(seed);
-}
-
 
 void mexFunction(int nlhs, mxArray* plhs[],
     int nrhs, const mxArray* prhs[])
@@ -75,8 +57,12 @@ void mexFunction(int nlhs, mxArray* plhs[],
     vector<bool> x(N);
     double Q;
     vector<double> Qs;
-    init_random_number_generator();
-    km_config_label_switching(A, W, num_of_runs, c, x, Q, Qs);
+    
+    mt19937_64 mtrnd;
+    random_device r;
+    seed_seq seed{ r(), r(), r(), r(), r(), r(), r(), r() };
+    mtrnd.seed(seed);
+    km_config_label_switching(A, W, num_of_runs, c, x, Q, Qs, mtrnd);
 
     
     int K = Qs.size();
@@ -86,7 +72,6 @@ void mexFunction(int nlhs, mxArray* plhs[],
     }else{
 	p_values.assign(K,1.0);
     }
-
 
     plhs[0] = mxCreateDoubleMatrix((mwSize)N, (mwSize)1, mxREAL);
     plhs[1] = mxCreateDoubleMatrix((mwSize)N, (mwSize)1, mxREAL);

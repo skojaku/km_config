@@ -27,9 +27,7 @@
 #include <vector>
 #include <numeric>
 #include <cmath>
-#ifdef _OEPNMP
 #include <omp.h>
-#endif
 
 #if !defined(MAX)
 #define MAX(A, B) ((A) > (B) ? (A) : (B))
@@ -40,8 +38,10 @@
 #endif
 using namespace std;
 
+#include "config_model.h"
+
 /* Global variables */
-std::mt19937_64 mtrnd;
+//std::mt19937_64 mtrnd;
 uniform_real_distribution<double> udist(0.0, 1.0);
 
 
@@ -50,7 +50,11 @@ uniform_real_distribution<double> udist(0.0, 1.0);
 * This function initialises mtrnd. 
 *
 */
-void init_random_number_generator();
+// initialise mtrnd
+/*
+mt19937_64 init_random_number_generator()
+{
+}*/
 
 
 /* ---- KM-config algorithm ----

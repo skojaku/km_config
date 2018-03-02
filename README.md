@@ -95,7 +95,21 @@ Change the delimiter for [input-file] and [output-file] to D. (Default: space)
     
   This will produce a mex file "km_config_mex.mexa64" in the matlab/ directory. 
   Copy "matlab/km_config_mex.mexa64" and "matlab/km_config.m" to your working directory.
- 
+
+
+  You may have the following message:
+  
+  ```bash
+  Warning: You are using gcc version '5.4.0'. The version of gcc is not supported. 
+  The version currently supported with MEX is '4.9.x'. 
+  ```
+  
+  This means you are required to change the version of g++ compiler. 
+  To remedy this, modify a line in ''./makefile'' as follows: 
+  
+  ```bash
+  MEXCOMPILER := g++-(the version compatible with your mex compiler, e.g., g++-4.9) 
+  ```
  
  ### USAGE:
 
