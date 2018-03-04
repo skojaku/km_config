@@ -195,7 +195,7 @@ cppairs = kmconfig.detect(edges, num_of_runs = 10, significance_level = 0.05, nu
     * cppairs[3] - Numpy array of length N. cppairs[3][i] = True or False indicates that node i belongs to the significant or insignificant cppairs, respectively.
 
   
-### Example (src/python/example.m)
+### Example (src/python/example.py)
     
 ```python
 import csv
