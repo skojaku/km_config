@@ -9,19 +9,10 @@ Table of Contents
 
 * [km\_config](#km_config)
   * [C\+\+](#c)
-    * [Compile:](#compile)
-    * [Usage:](#usage)
-    * [Example (src/cpp/example\.sh):](#example-srccppexamplesh)
   * [Matlab](#matlab)
-    * [Compile:](#compile-1)
-    * [Uage:](#uage)
-    * [Example (src/matlab/example\.m)](#example-srcmatlabexamplem)
   * [Python](#python)
-    * [Compile:](#compile-2)
-    * [Uage:](#uage-1)
-    * [Example (src/python/example\.m)](#example-srcpythonexamplem)
   * [Files](#files)
-    * [REQUIREMENT:](#requirement)
+  * [REQUIREMENT:](#requirement)
 
 
 ## C++ 
@@ -244,7 +235,7 @@ Directory src/python contains Python wrapper
   * src/python/CMakeLists.txt is the cmake file for the Python code. 
   * src/python/example_edge_list.txt is an edge list of a network consisting of two idealised core-periphery pairs.
 
-### REQUIREMENT: 
+## REQUIREMENT: 
       
   MATLAB 2012 or later.
  * Python3.4 or later
