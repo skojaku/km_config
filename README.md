@@ -6,13 +6,11 @@ Please cite
 
 Table of Contents
 =================
-
-* [km\_config](#km_config)
-  * [C\+\+](#c)
-  * [Matlab](#matlab)
-  * [Python](#python)
-  * [Files](#files)
-  * [REQUIREMENT:](#requirement)
+* [C\+\+](#c)
+* [Matlab](#matlab)
+* [Python](#python)
+* [Files](#files)
+* [REQUIREMENT:](#requirement)
 
 
 ## C++ 
