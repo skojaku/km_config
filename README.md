@@ -235,7 +235,7 @@ Directory src/python contains Python wrapper
 
 ## Requirement
       
-  MATLAB 2012 or later.
+ * MATLAB 2012 or later.
  * Python3.4 or later
  * Cmake2.8 or later
 
