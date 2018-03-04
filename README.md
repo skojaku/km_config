@@ -4,30 +4,9 @@ C++, Matlab and Python code for the KM--config algorithm.
 Please cite  
   Kojaku, S. and Masuda, N. "Core-periphery structure requires somthing else in the network". Preprint arXiv:1710.07076 (2017).
 
+<!-- START doctoc -->
+<!-- END doctoc -->
 
-## Files
-Directory src/lib contains the main code written in C++ 
-  * src/lib/km_config.h is the header file.
-  * src/lib/km_config.cpp is the implementation file of the header file, km_config.h.
-
-Directory src/cpp contains C++ code for command-line cliend 
-  * src/cpp/km_config_cl.cpp is the code for the command-line client.
-  * src/cpp/example.m is a usage example.
-  * src/cpp/example_edge_list.txt is an edge list of a network consisting of two idealised core-periphery pairs.
-  * src/cpp/makefile is the makefile for the command-line client. 
-
-Directory src/matlab contains Matlab wrapper 
-  * src/matlab/km_config_mex.cpp is the MATLAB wrapper for the C++ code (km_config.h and km_config.cpp)
-  * src/matlab/km_config.m is the code for the MATLAB client.
-  * src/matlab/example.m is a usage example.
-  * src/matlab/makefile is the makefile for the MATLAB code. 
-
-Directory src/python contains Python wrapper 
-  * src/python/km_config.cpp is the Python wrapper for the C++ code (km_config.h and km_config.cpp)
-  * src/python/example.py is a usage example.
-  * src/python/makefile is the makefile for the Python code. 
-  * src/python/CMakeLists.txt is the cmake file for the Python code. 
-  * src/python/example_edge_list.txt is an edge list of a network consisting of two idealised core-periphery pairs.
 
 
 ## C++ 
@@ -226,6 +205,29 @@ cppairs = kmconfig.detect(edges, significance_level = 0.05)
 print(cppairs)
 ```
 
+## Files
+Directory src/lib contains the main code written in C++ 
+  * src/lib/km_config.h is the header file.
+  * src/lib/km_config.cpp is the implementation file of the header file, km_config.h.
+
+Directory src/cpp contains C++ code for command-line cliend 
+  * src/cpp/km_config_cl.cpp is the code for the command-line client.
+  * src/cpp/example.m is a usage example.
+  * src/cpp/example_edge_list.txt is an edge list of a network consisting of two idealised core-periphery pairs.
+  * src/cpp/makefile is the makefile for the command-line client. 
+
+Directory src/matlab contains Matlab wrapper 
+  * src/matlab/km_config_mex.cpp is the MATLAB wrapper for the C++ code (km_config.h and km_config.cpp)
+  * src/matlab/km_config.m is the code for the MATLAB client.
+  * src/matlab/example.m is a usage example.
+  * src/matlab/makefile is the makefile for the MATLAB code. 
+
+Directory src/python contains Python wrapper 
+  * src/python/km_config.cpp is the Python wrapper for the C++ code (km_config.h and km_config.cpp)
+  * src/python/example.py is a usage example.
+  * src/python/makefile is the makefile for the Python code. 
+  * src/python/CMakeLists.txt is the cmake file for the Python code. 
+  * src/python/example_edge_list.txt is an edge list of a network consisting of two idealised core-periphery pairs.
 
 ### REQUIREMENT: 
       
