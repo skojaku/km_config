@@ -233,7 +233,7 @@ Directory src/python contains Python wrapper
   * src/python/CMakeLists.txt is the cmake file for the Python code. 
   * src/python/example_edge_list.txt is an edge list of a network consisting of two idealised core-periphery pairs.
 
-## REQUIREMENT: 
+## Requirement: 
       
   MATLAB 2012 or later.
  * Python3.4 or later
