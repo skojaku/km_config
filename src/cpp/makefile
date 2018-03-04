@@ -8,8 +8,8 @@ CFLAGS := -O3 -std=c++11 -fopenmp
 
 all: km_config
 
-km_config:src/km_config.cpp src/km_config.h src/km_config_cl.cpp src/config_model.h
-	$(CC) $(CFLAGS) -o km_config src/km_config_cl.cpp 
+km_config:../lib/km_config.cpp ../lib/km_config.h km_config_cl.cpp
+	$(CC) $(CFLAGS) -o km_config km_config_cl.cpp 
 
 .PHONY: clean
 clean:

@@ -23,8 +23,8 @@
 * 
 */
 
-#include "../../cpp/src/km_config.h"
-#include "../../cpp/src/km_config.cpp"
+#include "../lib/km_config.h"
+#include "../lib/km_config.cpp"
 #include "mex.h"
 
 void mexFunction(int nlhs, mxArray* plhs[],

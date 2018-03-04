@@ -20,8 +20,8 @@
 * DATE - 11 Oct, 2017
 */
 
-#include "km_config.h"
-#include "km_config.cpp"
+#include "../lib/km_config.h"
+#include "../lib/km_config.cpp"
 #include <string>
 #include <stdio.h>
 #include <unistd.h>

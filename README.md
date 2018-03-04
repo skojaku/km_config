@@ -1,42 +1,50 @@
 # km_config
-MATLAB and C++ codes for the KM--config algorithm.
+C++, Matlab and Python code for the KM--config algorithm.
 
 Please cite  
   Kojaku, S. and Masuda, N. "Core-periphery structure requires somthing else in the network". Preprint arXiv:1710.07076 (2017).
 
 
 ## Files
-Directory cpp/ contains C++ codes.  
-  * cpp/km_config.h is the header file.
-  * cpp/km_config.cpp is the implementation file of the header file, km_config.h.
-  * cpp/km_config_cl.cpp is the code for the command line client.
-  * cpp/makefile is the makefile for the C++ codes. 
-  * cpp/example_edge_list.txt is an edge list of a network consisting of two idealised core-periphery pairs.
+Directory src/lib contains the main code written in C++ 
+  * src/lib/km_config.h is the header file.
+  * src/lib/km_config.cpp is the implementation file of the header file, km_config.h.
 
+Directory src/cpp contains C++ code for command-line cliend 
+  * src/cpp/km_config_cl.cpp is the code for the command-line client.
+  * src/cpp/example.m is a usage example.
+  * src/cpp/example_edge_list.txt is an edge list of a network consisting of two idealised core-periphery pairs.
+  * src/cpp/makefile is the makefile for the command-line client. 
 
-Directory matlab/ contains the MATLAB wrapper for the C++ codes.  
-  * matlab/km_config.m is the code for the MATLAB client.
-  * matlab/km_config_mex.cpp is the MATLAB wrapper for the C++ codes (km_config.h and km_config.cpp)
-  * matlab/makefile is the makefile for the MATLAB codes. 
-  * matlab/example.m is a usage example.
-   
+Directory src/matlab contains Matlab wrapper 
+  * src/matlab/km_config_mex.cpp is the MATLAB wrapper for the C++ code (km_config.h and km_config.cpp)
+  * src/matlab/km_config.m is the code for the MATLAB client.
+  * src/matlab/example.m is a usage example.
+  * src/matlab/makefile is the makefile for the MATLAB code. 
+
+Directory src/python contains Python wrapper 
+  * src/python/km_config.cpp is the Python wrapper for the C++ code (km_config.h and km_config.cpp)
+  * src/python/example.py is a usage example.
+  * src/python/makefile is the makefile for the Python code. 
+  * src/python/CMakeLists.txt is the cmake file for the Python code. 
+  * src/python/example_edge_list.txt is an edge list of a network consisting of two idealised core-periphery pairs.
+
 
 ## C++ 
 
-### COMPILE:
+### Compile:
 
-  Go to the cpp/ directory. Then, type
+  To compile, type
         
-    make
+  ```bash
+  make cpp
+  ```
        
-  or type
-        
-    g++ -O3 -std=c++11 -fopenmp -o km_config km_config.cpp
-    	
-  This will produce an executable file "km_config" in the cpp/ directory.
+  This will produce an executable file "km_config" in the src/cpp directory.
  
  
-### USAGE:
+### Usage:
+
   ``` bash
   km_config [input-file] [output-file] [options]
   ```
@@ -70,31 +78,29 @@ The node's ID starts from I. (Default: 1)
 Change the delimiter for [input-file] and [output-file] to D. (Default: space)  
 
 
- ### EXAMPLES:
+### Example (src/cpp/example.sh):
     
-  To find core-periphery pairs, type
+```bash
+#To find core-periphery pairs, type
+./km_config example_edge_list.txt result.txt
     
-    ./km_config example_edge_list.txt result.txt
-    
-  To find significant core-periphery pairs at a significance level of 0.05, type
- 
-    ./km_config example_edge_list.txt result.txt -a 0.05 
+#To find significant core-periphery pairs at a significance level of 0.05, type
+./km_config example_edge_list.txt result.txt -a 0.05 
+```
 
 
-## MATLAB  
+## Matlab 
       
-### COMPILE:
+### Compile:
 
-  Go to the matlab/ directory. Then, type
+  To compile, type
         
-    make
+  ```bash
+  make matlab
+  ```
     
-  or type
-       
-    mex CXXFLAGS='$CXXFLAGS -fopenmp' LDFLAGS='$LDFLAGS -fopenmp' CXXOPTIMFLAGS='-O3 -DNDEBUG' LDOPTIMFLAGS='-O3' km_config_mex.cpp 
-    
-  This will produce a mex file "km_config_mex.mexa64" in the matlab/ directory. 
-  Copy "matlab/km_config_mex.mexa64" and "matlab/km_config.m" to your working directory.
+  This will produce a mex file "km_config_mex.mexa64" in the src/matlab/ directory. 
+  Copy "matlab/km_config_mex.mexa64" and "src/matlab/km_config.m" to your working directory.
 
 
   You may have the following message:
@@ -105,58 +111,127 @@ Change the delimiter for [input-file] and [output-file] to D. (Default: space)
   ```
   
   This means you are required to change the version of g++ compiler. 
-  To remedy this, modify a line in ''./makefile'' as follows: 
+  To remedy this, modify a line in ''./src/matlab/makefile'' as follows: 
   
   ```bash
   MEXCOMPILER := g++-(the version compatible with your mex compiler, e.g., g++-4.9) 
   ```
  
- ### USAGE:
+### Uage:
 
     [c, x, Q, q, p_vals] = km_config(A, num_of_runs, alpha, num_of_rand_nets);
  
  
   **INPUT:** 
  
-  * A - N times N adjacency matrix, where N is the number of nodes. A(i, j) = 1 if nodes and j are adjacent. Otherwise A(i, j) = 0. Matrix A should be symmetric, i.e., A(i, j) = A(j, i).
+  * `A` - N times N adjacency matrix, where N is the number of nodes. A(i, j) = w if nodes and j are adjacent, where w is the edge weight. Otherwise A(i, j) = 0. Matrix A should be symmetric, i.e., A(i, j) = A(j, i).
       
-  * (optional) num_of_runs - Number of runs. (Default: 10) 
+  * (optional) `num_of_runs` - Number of runs. (Default: 10) 
       
-  * (optional) alpha - Statistical significance level before the Šidák correction. (Default: 1) If alpha is not set, the statistical test is not carried out. 
+  * (optional) `alpha` - Statistical significance level before the Šidák correction. (Default: 1) If alpha is not set, the statistical test is not carried out. 
       
-  * (optional) num_of_rand_nets - Number of randomised networks. (Default: 500) 
+  * (optional) `num_of_rand_nets` - Number of randomised networks. (Default: 500) 
 
 
   **OUTPUT:**
 
-  * c - N-dimensional column vector. c(i) is the index of the core-periphery pair to which node i belongs.
+  * `c` - N-dimensional column vector. c(i) is the index of the core-periphery pair to which node i belongs.
           If node i belongs to an insignificant core-periphery pair, then c(i) = NaN.
       
-  * x - N-dimensional column vector. If node i is a core node, x(i) = 1. If node i is a periphery node, x(i) = 0.
+  * `x` - N-dimensional column vector. If node i is a core node, x(i) = 1. If node i is a periphery node, x(i) = 0.
           If node i belongs to an insignificant core-periphery pair, then x(i) = NaN.
       
-  * Q - The quality value of the detected core-periphery pair.
+  * `Q` - The quality value of the detected core-periphery pair.
       
-  * q - C-dimensional column vector. q(i) is the contribution of the i-th core-periphery pair to Q.
+  * `q` - C-dimensional column vector. q(i) is the contribution of the i-th core-periphery pair to Q.
           C is the number of core-periphery pairs.
       
-  * p_vals - C-dimensional column vector. p_vals(i) is the statistical significance of the i-th core-periphery pair. 
+  * `p_vals` - C-dimensional column vector. p_vals(i) is the statistical significance of the i-th core-periphery pair. 
 
   
-### EXAMPLES:
+### Example (src/matlab/example.m)
     
-To find core-periphery pairs, type 
- 
-    [c, x, Q, q] = km_config(A);
+```matlab
+% Construct a network with two core-periphery pairs 
+A = [
+	ones(5),ones(5);
+	ones(5),zeros(5);
+];
+A = A - diag(diag(A));
+A = kron(eye(2), A);
 
-To find significant core-periphery pairs at a significance level of 0.05, type	
+% Display adjacency matrix
+disp('---- Adjacency matrix ----') 
+full(A)
+
+% Run KM-config algorithm
+[c, x, Q, q] = km_config(A) % without statistical test
+
+[c, x, Q, q, p_values] = km_config(A, 10, 0.05) % with statistical test
+```
+
+
+## Python 
+      
+### Compile:
+
+  To compile, type
+        
+  ```bash
+  make python 
+  ```
     
-    [c, x, Q, q, p_vals] = km_config(A, 10, 0.05);
+This creates a shared library ''src/python/km_config.cpython-36m-x86_64-linux-gnu.so'' callable from python. 
+Copy the shared library to your working directory. 
+ 
+### Uage:
+
+```python
+import km_config as kmconfig
+cppairs = kmconfig.detect(edges, num_of_runs = 10, significance_level = 0.05, num_of_rand_nets = 500)
+```
+ 
+ 
+  **INPUT:** 
+ 
+  * `edges` - Mx3 Numpy array, where M is the number of edges. The first and second columns indicate the IDs of nodes connected by an edge. The third column indicates the weight of the edge.
+      
+  * (optional) `num_of_runs` - Number of runs. (Default: 10) 
+      
+  * (optional) `significance_level` - Statistical significance level before the Šidák correction. (Default: 1) If alpha is not set, the statistical test is not carried out. 
+      
+  * (optional) `num_of_rand_nets` - Number of randomised networks. (Default: 500) 
+
+
+  **OUTPUT:**
+
+  * `cppairs` - List of length 4. 
+    * cppairs[0] - Numpy array of length N, where N is the number of nodes. communities[0][i] indicates the index of the core-periphery pair to which node i belongs.
+    * cppairs[1] - Numpy array of length N. cppairs[1][i] = 1 or = 0 indicates a core or a peripheral node, respectively.
+    * cppairs[1] - Numpy array of length N. cppairs[2][i] indicates the p-value of the core-periphery pair to which node i belongs.
+    * cppairs[2] - Numpy array of length N. cppairs[3][i] = True or False indicates that node i belongs to the significant or insignificant cppairs, respectively.
+
+  
+### Example (src/python/example.m)
+    
+```python
+import csv
+import numpy as np
+import km_config as kmconfig
+
+linkfilename='example_edge_list.txt'
+edges = np.genfromtxt(linkfilename, delimiter=' ', skip_header = 0)
+cppairs = kmconfig.detect(edges, significance_level = 0.05)
+
+print(cppairs)
+```
 
 
 ### REQUIREMENT: 
       
   MATLAB 2012 or later.
+ * Python3.4 or later
+ * Cmake2.8 or later
 
 ---
 Last updated: 17 October 2017
