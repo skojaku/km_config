@@ -189,7 +189,7 @@ cppairs = kmconfig.detect(edges, num_of_runs = 10, significance_level = 1, num_o
   **OUTPUT:**
 
   * `cppairs` - List of length 4. 
-    * cppairs[0] - Numpy array of length N, where N is the number of nodes. communities[0][i] indicates the index of the core-periphery pair to which node i belongs.
+    * cppairs[0] - Numpy array of length N, where N is the number of nodes. cppairs[0][i] indicates the index of the core-periphery pair to which node i belongs.
     * cppairs[1] - Numpy array of length N. cppairs[1][i] = 1 or = 0 indicates a core or a peripheral node, respectively.
     * cppairs[2] - Numpy array of length N. cppairs[2][i] indicates the p-value of the core-periphery pair to which node i belongs.
     * cppairs[3] - Numpy array of length N. cppairs[3][i] = True or False indicates that node i belongs to the significant or insignificant cppairs, respectively.
