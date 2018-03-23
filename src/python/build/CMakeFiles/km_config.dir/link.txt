@@ -1,0 +1,1 @@
+/usr/bin/c++  -fPIC -O3 -fopenmp  -shared -Wl,-soname,km_config.cpython-35m-x86_64-linux-gnu.so -o km_config.cpython-35m-x86_64-linux-gnu.so CMakeFiles/km_config.dir/km_config.cpp.o -flto 

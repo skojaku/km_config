@@ -171,7 +171,7 @@ Copy the shared library to your working directory.
 
 ```python
 import km_config as kmconfig
-cppairs = kmconfig.detect(edges, num_of_runs = 10, significance_level = 0.05, num_of_rand_nets = 500)
+cppairs = kmconfig.detect(edges, num_of_runs = 10, significance_level = 1, num_of_rand_nets = 500)
 ```
  
  
@@ -181,7 +181,7 @@ cppairs = kmconfig.detect(edges, num_of_runs = 10, significance_level = 0.05, nu
       
   * (optional) `num_of_runs` - Number of runs. (Default: 10) 
       
-  * (optional) `significance_level` - Statistical significance level before the Šidák correction (Default: 0.05). If significance_level = 1, the statistical test is not carried out. 
+  * (optional) `significance_level` - Statistical significance level before the Šidák correction (Default: 1). If significance_level = 1, the statistical test is not carried out. 
       
   * (optional) `num_of_rand_nets` - Number of randomised networks. (Default: 500) 
 

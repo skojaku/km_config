@@ -1,0 +1,5 @@
+/home/sada/sync_files/program/git/km_config/src/python/build/CMakeFiles/edit_cache.dir
+/home/sada/sync_files/program/git/km_config/src/python/build/CMakeFiles/rebuild_cache.dir
+/home/sada/sync_files/program/git/km_config/src/python/build/CMakeFiles/km_config.dir
+/home/sada/sync_files/program/git/km_config/src/python/build/pybind11/CMakeFiles/edit_cache.dir
+/home/sada/sync_files/program/git/km_config/src/python/build/pybind11/CMakeFiles/rebuild_cache.dir
