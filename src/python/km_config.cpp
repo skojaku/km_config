@@ -60,7 +60,7 @@ void readEdgeTable(py::array_t<double> edges_array_t, vector<vector<int>>& A, ve
     }
 }
 
-auto detect(py::array_t<double> edges, int num_of_runs, double significance_level, int num_of_rand_nets){
+py::list detect(py::array_t<double> edges, int num_of_runs, double significance_level, int num_of_rand_nets){
         int N = 0;
         int M = 0;	
         vector<vector<int> > A;
