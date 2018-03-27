@@ -66,10 +66,7 @@ py::list detect(py::array_t<double> edges, int num_of_runs, double significance_
         vector<vector<int> > A;
         vector<vector<double>> W;
 	readEdgeTable(edges, A, W, N, M);
-    	mt19937_64 mtrnd;
-    	random_device r;
-    	seed_seq seed{ r(), r(), r(), r(), r(), r(), r(), r() };
-    	mtrnd.seed(seed);
+        mt19937_64 mtrnd = init_random_number_generator();
 	vector<int> c(N);
 	vector<bool> x(N);
 	double Q;

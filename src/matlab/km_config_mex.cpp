@@ -58,10 +58,8 @@ void mexFunction(int nlhs, mxArray* plhs[],
     double Q;
     vector<double> Qs;
     
-    mt19937_64 mtrnd;
-    random_device r;
-    seed_seq seed{ r(), r(), r(), r(), r(), r(), r(), r() };
-    mtrnd.seed(seed);
+    mt19937_64 mtrnd = init_random_number_generator();
+
     km_config_label_switching(A, W, num_of_runs, c, x, Q, Qs, mtrnd);
 
     

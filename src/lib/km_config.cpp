@@ -138,11 +138,7 @@ void estimate_statistical_significance(
     }
     vector<mt19937_64> mtrnd_list(numthread);
     for(int i = 0; i < numthread; i++){
-	mt19937_64 mtrnd;
-    	random_device r;
-    	seed_seq seed{ r(), r(), r(), r(), r(), r(), r(), r() };
-    	mtrnd.seed(seed);
-	mtrnd_list[i] = mtrnd;
+	mtrnd_list[i] = init_random_number_generator();
     }
  
 

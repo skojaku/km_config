@@ -130,10 +130,7 @@ int main(int argc, char* argv[])
     double Q;
     vector<double> q;
     srand(time(NULL));
-    mt19937_64 mtrnd;
-    random_device r;
-    seed_seq seed{ r(), r(), r(), r(), r(), r(), r(), r() };
-    mtrnd.seed(seed);
+    mt19937_64 mtrnd = init_random_number_generator();
     km_config_label_switching(A, W, num_of_runs, c, x, Q, q, mtrnd);
     cout <<"   end"<<endl<<endl;
 
