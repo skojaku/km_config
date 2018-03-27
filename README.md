@@ -115,7 +115,7 @@ Change the delimiter for [input-file] and [output-file] to D. (Default: space)
   %	return mtrnd;
   %}
   ```
-  and remove line 63 and 82 to make the following function activate: 
+  and remove lines 63 and 82 to make the following function callable: 
 
   ```cpp
   std::mt19937_64 init_random_number_generator(){
