@@ -99,7 +99,48 @@ Change the delimiter for [input-file] and [output-file] to D. (Default: space)
   ```bash
   MEXCOMPILER := g++-(the version compatible with your mex compiler, e.g., g++-4.9) 
   ```
- 
+
+  If you get erros like this: 
+  ```bash
+  Invalid MEX file '~/program/git/km_config/src/matlab/km_config_mex.mexa64': /usr/local/MATLAB/R2016b/bin/glnxa64/../../sys/os/glnxa64/libstdc++.so.6: version `GLIBCXX_3.4.21' not found (required by ~/program/git/km_config/src/matlab/km_config_mex.mexa64) 
+  ```
+
+  then open `src/lib/km_config.h` and comment out lines 51--57, i.e.,  
+  ```cpp
+  %std::mt19937_64 init_random_number_generator(){
+  %	mt19937_64 mtrnd;
+  %    	random_device r;
+  %    	seed_seq seed{ r(), r(), r(), r(), r(), r(), r(), r() };
+  %    	mtrnd.seed(seed);
+  %	return mtrnd;
+  %}
+  ```
+  and remove line 63 and 82 to make the following function activate: 
+
+  ```cpp
+  std::mt19937_64 init_random_number_generator(){
+      int seeds[624];
+      size_t size = 624*4; //Declare size of data
+      std::ifstream urandom("/dev/urandom", std::ios::in | std::ios::binary); //Open stream
+      if (urandom) //Check if stream is open
+      {
+          urandom.read(reinterpret_cast<char*>(seeds), size); //Read from urandom
+          urandom.close(); //close stream
+      }
+      else //Open failed
+      {
+          		std::cerr << "Failed to open /dev/urandom" << std::endl;
+      }
+      std::mt19937_64 mtrnd;
+      std::seed_seq seed(&seeds[0], &seeds[624]);
+      mtrnd.seed(seed);
+      return mtrnd;
+  }
+  ```
+
+  Even with this modification, you may not be able to resolve the issue.
+  In this case, please write a code to initialise mt19937\_64 in ``std::mt19937_64 init_random_number_generator()``. 
+
 ### Uage:
 
     [c, x, Q, q, p_vals] = km_config(A, num_of_runs, alpha, num_of_rand_nets);
