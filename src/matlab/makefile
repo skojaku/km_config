@@ -5,7 +5,7 @@ MEXFLAGS := -fopenmp
 MEXOFLAGS := -O3
 
 #MEXCOMPILER := gcc
-MEXCOMPILER := g++-4.7
+MEXCOMPILER := g++
 
 all: km_config_mex.mexa64
 
