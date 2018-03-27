@@ -177,7 +177,7 @@ cppairs = kmconfig.detect(edges, num_of_runs = 10, significance_level = 1, num_o
  
   **INPUT:** 
  
-  * `edges` - Mx3 Numpy array, where M is the number of edges. The first and second columns indicate the IDs of nodes connected by an edge. The third column indicates the weight of the edge.
+  * `edges` - Mx3 Numpy array, where M is the number of edges. Data type should be float (e.g., edges.astype(float)). The first and second columns indicate the IDs of nodes connected by an edge. The third column indicates the weight of the edge.
       
   * (optional) `num_of_runs` - Number of runs. (Default: 10) 
       
