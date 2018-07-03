@@ -1,0 +1,8 @@
+setup.py
+kmalgorithm.egg-info/PKG-INFO
+kmalgorithm.egg-info/SOURCES.txt
+kmalgorithm.egg-info/dependency_links.txt
+kmalgorithm.egg-info/not-zip-safe
+kmalgorithm.egg-info/requires.txt
+kmalgorithm.egg-info/top_level.txt
+src/kmalgorithm.cpp

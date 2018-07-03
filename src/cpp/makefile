@@ -1,6 +1,7 @@
 # Makefile
 .PHONY: all
 
+#CC := gcc
 CC := g++
 
 #CFLAGS := -O3 -std=c++11 # use this option in case openmp does not work 

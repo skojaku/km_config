@@ -1,0 +1,10 @@
+Metadata-Version: 1.0
+Name: kmalgorithm
+Version: 0.0.6
+Summary: Algorithm for finding multiple core-periphery pairs in networks
+Home-page: https://github.com/skojaku/km_config
+Author: Sadamori Kojaku
+Author-email: UNKNOWN
+License: UNKNOWN
+Description: Algorithm for finding multiple core-periphery pairs in networks. Please cite  "S. Kojaku and N. Masuda, Core-periphery structure requires something else in the network" New J. Phys., 20, 043012 (2018)"
+Platform: UNKNOWN
