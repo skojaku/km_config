@@ -1,0 +1,10 @@
+/usr/local/lib/python3.5/dist-packages/kmalgorithm-0.0.2-py3.5-linux-x86_64.egg/_kmalgorithm.cpython-35m-x86_64-linux-gnu.so
+/usr/local/lib/python3.5/dist-packages/kmalgorithm-0.0.2-py3.5-linux-x86_64.egg/_kmalgorithm.py
+/usr/local/lib/python3.5/dist-packages/kmalgorithm-0.0.2-py3.5-linux-x86_64.egg/EGG-INFO/not-zip-safe
+/usr/local/lib/python3.5/dist-packages/kmalgorithm-0.0.2-py3.5-linux-x86_64.egg/EGG-INFO/PKG-INFO
+/usr/local/lib/python3.5/dist-packages/kmalgorithm-0.0.2-py3.5-linux-x86_64.egg/EGG-INFO/top_level.txt
+/usr/local/lib/python3.5/dist-packages/kmalgorithm-0.0.2-py3.5-linux-x86_64.egg/EGG-INFO/native_libs.txt
+/usr/local/lib/python3.5/dist-packages/kmalgorithm-0.0.2-py3.5-linux-x86_64.egg/EGG-INFO/dependency_links.txt
+/usr/local/lib/python3.5/dist-packages/kmalgorithm-0.0.2-py3.5-linux-x86_64.egg/EGG-INFO/requires.txt
+/usr/local/lib/python3.5/dist-packages/kmalgorithm-0.0.2-py3.5-linux-x86_64.egg/EGG-INFO/SOURCES.txt
+/usr/local/lib/python3.5/dist-packages/kmalgorithm-0.0.2-py3.5-linux-x86_64.egg/__pycache__/_kmalgorithm.cpython-35.pyc

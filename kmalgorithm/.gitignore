@@ -1,0 +1,7 @@
+.pypirc
+inst.sh
+makefile
+build
+dist
+kmalgorithm.egg-info
+tmp
