@@ -1,8 +1,0 @@
-setup.py
-km_config_cpp.egg-info/PKG-INFO
-km_config_cpp.egg-info/SOURCES.txt
-km_config_cpp.egg-info/dependency_links.txt
-km_config_cpp.egg-info/not-zip-safe
-km_config_cpp.egg-info/requires.txt
-km_config_cpp.egg-info/top_level.txt
-src/km_config.cpp
