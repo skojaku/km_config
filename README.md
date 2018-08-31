@@ -4,7 +4,7 @@ C++, Matlab and Python code for the KM--config algorithm.
 Please cite  
   Kojaku, S. and Masuda, N. "Core-periphery structure requires somthing else in the network". Preprint arXiv:1710.07076 (2017).
   
- ** New repository https://github.com/skojaku/core-periphery-detection contains the same algorithm and also other conventional algorithms such as the Borgatti-Everett algorithm and KM-ER algorithm. **
+ **New repository https://github.com/skojaku/core-periphery-detection contains the same algorithm and also other conventional algorithms such as the Borgatti-Everett algorithm and KM-ER algorithm.**
  
 
 Table of Contents
