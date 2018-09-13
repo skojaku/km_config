@@ -1,6 +1,3 @@
-# Note
-
-**New repository https://github.com/skojaku/core-periphery-detection contains the same algorithm and also other conventional algorithms such as the Borgatti-Everett algorithm and KM-ER algorithm.**
  
 
 # km_config
