@@ -98,12 +98,12 @@ int main(int argc, char* argv[])
     }
     if(cmdOptionExists(argv, argv + argc, "-d")){
         tmp = getCmdOption(argv, argv + argc, "-d");
-	if(!tmp.compare("\\t")){
-		tmp = myreplace( tmp, "\\t", "\t");
-		delimiter = *tmp.c_str();
-	}else{
-		delimiter = *tmp.c_str();
-	}
+    if(!tmp.compare("\\t")){
+        tmp = myreplace( tmp, "\\t", "\t");
+        delimiter = *tmp.c_str();
+    }else{
+        delimiter = *tmp.c_str();
+    }
     }
 
     cout << "===================" << endl;
@@ -147,18 +147,18 @@ int main(int argc, char* argv[])
     fill(p_values.begin(), p_values.end(), 0.0);
     double corrected_alpha =1.0 - pow(1.0 - alpha, 1.0 / (double)K); // Sidak correction.
     if (alpha < 1.0) {
-    	cout << "   Significance test..."<<endl;
-    	cout << "      - Number of random networks: "<< num_of_rand_nets<< endl;
-    	cout << "      - Significance level: "<< alpha<< endl;
-    	cout << "      - Corrected-significance level: "<< corrected_alpha<< endl;
-    	cout << "      - Number of core-periphery pairs under testing: "<< K<< endl;
+        cout << "   Significance test..."<<endl;
+        cout << "      - Number of random networks: "<< num_of_rand_nets<< endl;
+        cout << "      - Significance level: "<< alpha<< endl;
+        cout << "      - Corrected-significance level: "<< corrected_alpha<< endl;
+        cout << "      - Number of core-periphery pairs under testing: "<< K<< endl;
         estimate_statistical_significance(A, W, c, x, num_of_runs, num_of_rand_nets, p_values);
-       	cout <<"   end"<<endl<<endl;
+           cout <<"   end"<<endl<<endl;
     }
     cout << "   "<<endl;
     int Ksig = 0;
     for(int i = 0; i < K; i++){
-	if(p_values[i]<=corrected_alpha) Ksig++;
+    if(p_values[i]<=corrected_alpha) Ksig++;
     }
     
     cout << "# Results: "<< endl;
@@ -256,11 +256,11 @@ void readEdgeTable(string filename, vector<vector<int> >& A, vector<vector<doubl
 
         int sid = stoi(v[0]) - startIndex;
         int did = stoi(v[1]) - startIndex;
-	double w = 1;
-	
-	if(v.size()>2){
-        	w = stof(v[2]);
-	}
+    double w = 1;
+    
+    if(v.size()>2){
+            w = stof(v[2]);
+    }
 
         if (N < sid)
             N = sid;
@@ -273,13 +273,12 @@ void readEdgeTable(string filename, vector<vector<int> >& A, vector<vector<doubl
 
     }
     N = N + 1;
-   
+ 
     vector<vector<int>>tmp(N, vector<int>(0));
     vector<vector<double>>tmp2(N, vector<double>(0));
     A = tmp; 
     W = tmp2; 
 
-   
     int wid = 0;
     int edgeListSize = edgeList.size();
     M = 0; 
@@ -288,23 +287,23 @@ void readEdgeTable(string filename, vector<vector<int> >& A, vector<vector<doubl
     for (int i = 0; i < edgeListSize; i += 2) {
         int sid = edgeList[i];
         int did = edgeList[i + 1];
-	double w = wList[wid];
+    double w = wList[wid];
 
-	wid++;
-	
-	if(sid == did){
-        	A[sid].push_back(did);
-        	W[sid].push_back(w);
-		M+=w;
-		isSelfLoop = true;
-	}else{
-        	A[sid].push_back(did);
-        	A[did].push_back(sid);
-        	W[sid].push_back(w);
-        	W[did].push_back(w);
-		M+=w;
-	}
-        isUnweighted = isUnweighted & (abs(w-1.0)<=1e-20);	
+    wid++;
+    
+    if(sid == did){
+            A[sid].push_back(did);
+            W[sid].push_back(w);
+        M+=w;
+        isSelfLoop = true;
+    }else{
+            A[sid].push_back(did);
+            A[did].push_back(sid);
+            W[sid].push_back(w);
+            W[did].push_back(w);
+        M+=w;
+    }
+        isUnweighted = isUnweighted & (abs(w-1.0)<=1e-20);    
     }
     edgeNum = wid;
 }
