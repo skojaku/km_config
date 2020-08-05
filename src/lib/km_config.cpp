@@ -141,7 +141,6 @@ void estimate_statistical_significance(
 	mtrnd_list[i] = init_random_number_generator();
     }
  
-
     vector<int> nhat;
     vector<double> qhat;
     #ifdef _OPENMP
