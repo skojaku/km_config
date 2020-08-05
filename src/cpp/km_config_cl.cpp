@@ -28,6 +28,22 @@
 
 char delimiter = ' '; // the delimiter for the [input-file] and [output-file]
 
+char* getCmdOption(char ** begin, char ** end, const std::string & option)
+{
+    char ** itr = std::find(begin, end, option);
+    if (itr != end && ++itr != end)
+    {
+        return *itr;
+    }
+    return 0;
+}
+
+bool cmdOptionExists(char** begin, char** end, const std::string& option)
+{
+    return std::find(begin, end, option) != end;
+}
+
+
 void split(const string& s, char c,
     vector<string>& v);
 
@@ -64,41 +80,32 @@ int main(int argc, char* argv[])
     int opt;
     opterr = 0;
     string tmp;
-    while ((opt = getopt(argc, argv, "hi:r:a:l:d:")) != -1) {
-        switch (opt) {
-        case 'h':
-            usage();
-            break;
-        case 'a':
-            tmp.assign(optarg);
-            alpha = atof(tmp.c_str());
-            break;
-        case 'r':
-            tmp.assign(optarg);
-            num_of_runs = atoi(tmp.c_str());
-            break;
-        case 'l':
-            tmp.assign(optarg);
-            num_of_rand_nets = atoi(tmp.c_str());
-            break;
-        case 'i':
-            tmp.assign(optarg);
-            startIndex = atoi(tmp.c_str());
-            break;
-        case 'd':
-            tmp.assign(optarg);
-	    if(!tmp.compare("\\t")){
-	    	tmp = myreplace( tmp, "\\t", "\t");
-	    	delimiter = *tmp.c_str();
-	    }else{
-	    	delimiter = *tmp.c_str();
-	    }
-            break;
-        default: /* '?' */
-            usage();
-            break;
-        }
+   
+    if(cmdOptionExists(argv, argv + argc, "-h")){
+        usage();
     }
+    if(cmdOptionExists(argv, argv + argc, "-a")){
+        alpha = atof( getCmdOption(argv, argv + argc, "-a") );
+    }
+    if(cmdOptionExists(argv, argv + argc, "-r")){
+        num_of_runs = atoi( getCmdOption(argv, argv + argc, "-r") );
+    }
+    if(cmdOptionExists(argv, argv + argc, "-l")){
+        num_of_rand_nets = atoi( getCmdOption(argv, argv + argc, "-l") );
+    }
+    if(cmdOptionExists(argv, argv + argc, "-i")){
+        startIndex = atoi( getCmdOption(argv, argv + argc, "-i") );
+    }
+    if(cmdOptionExists(argv, argv + argc, "-d")){
+        tmp = getCmdOption(argv, argv + argc, "-d");
+	if(!tmp.compare("\\t")){
+		tmp = myreplace( tmp, "\\t", "\t");
+		delimiter = *tmp.c_str();
+	}else{
+		delimiter = *tmp.c_str();
+	}
+    }
+
     cout << "===================" << endl;
     cout << "# input file:  "<< linkfile<< endl;
     cout << "# output file: "<< outputfile<< endl;
