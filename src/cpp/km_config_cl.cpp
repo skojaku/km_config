@@ -28,6 +28,22 @@
 
 char delimiter = ' '; // the delimiter for the [input-file] and [output-file]
 
+char* getCmdOption(char ** begin, char ** end, const std::string & option)
+{
+    char ** itr = std::find(begin, end, option);
+    if (itr != end && ++itr != end)
+    {
+        return *itr;
+    }
+    return 0;
+}
+
+bool cmdOptionExists(char** begin, char** end, const std::string& option)
+{
+    return std::find(begin, end, option) != end;
+}
+
+
 void split(const string& s, char c,
     vector<string>& v);
 
@@ -64,41 +80,32 @@ int main(int argc, char* argv[])
     int opt;
     opterr = 0;
     string tmp;
-    while ((opt = getopt(argc, argv, "hi:r:a:l:d:")) != -1) {
-        switch (opt) {
-        case 'h':
-            usage();
-            break;
-        case 'a':
-            tmp.assign(optarg);
-            alpha = atof(tmp.c_str());
-            break;
-        case 'r':
-            tmp.assign(optarg);
-            num_of_runs = atoi(tmp.c_str());
-            break;
-        case 'l':
-            tmp.assign(optarg);
-            num_of_rand_nets = atoi(tmp.c_str());
-            break;
-        case 'i':
-            tmp.assign(optarg);
-            startIndex = atoi(tmp.c_str());
-            break;
-        case 'd':
-            tmp.assign(optarg);
-	    if(!tmp.compare("\\t")){
-	    	tmp = myreplace( tmp, "\\t", "\t");
-	    	delimiter = *tmp.c_str();
-	    }else{
-	    	delimiter = *tmp.c_str();
-	    }
-            break;
-        default: /* '?' */
-            usage();
-            break;
-        }
+   
+    if(cmdOptionExists(argv, argv + argc, "-h")){
+        usage();
     }
+    if(cmdOptionExists(argv, argv + argc, "-a")){
+        alpha = atof( getCmdOption(argv, argv + argc, "-a") );
+    }
+    if(cmdOptionExists(argv, argv + argc, "-r")){
+        num_of_runs = atoi( getCmdOption(argv, argv + argc, "-r") );
+    }
+    if(cmdOptionExists(argv, argv + argc, "-l")){
+        num_of_rand_nets = atoi( getCmdOption(argv, argv + argc, "-l") );
+    }
+    if(cmdOptionExists(argv, argv + argc, "-i")){
+        startIndex = atoi( getCmdOption(argv, argv + argc, "-i") );
+    }
+    if(cmdOptionExists(argv, argv + argc, "-d")){
+        tmp = getCmdOption(argv, argv + argc, "-d");
+    if(!tmp.compare("\\t")){
+        tmp = myreplace( tmp, "\\t", "\t");
+        delimiter = *tmp.c_str();
+    }else{
+        delimiter = *tmp.c_str();
+    }
+    }
+
     cout << "===================" << endl;
     cout << "# input file:  "<< linkfile<< endl;
     cout << "# output file: "<< outputfile<< endl;
@@ -140,18 +147,18 @@ int main(int argc, char* argv[])
     fill(p_values.begin(), p_values.end(), 0.0);
     double corrected_alpha =1.0 - pow(1.0 - alpha, 1.0 / (double)K); // Sidak correction.
     if (alpha < 1.0) {
-    	cout << "   Significance test..."<<endl;
-    	cout << "      - Number of random networks: "<< num_of_rand_nets<< endl;
-    	cout << "      - Significance level: "<< alpha<< endl;
-    	cout << "      - Corrected-significance level: "<< corrected_alpha<< endl;
-    	cout << "      - Number of core-periphery pairs under testing: "<< K<< endl;
+        cout << "   Significance test..."<<endl;
+        cout << "      - Number of random networks: "<< num_of_rand_nets<< endl;
+        cout << "      - Significance level: "<< alpha<< endl;
+        cout << "      - Corrected-significance level: "<< corrected_alpha<< endl;
+        cout << "      - Number of core-periphery pairs under testing: "<< K<< endl;
         estimate_statistical_significance(A, W, c, x, num_of_runs, num_of_rand_nets, p_values);
-       	cout <<"   end"<<endl<<endl;
+           cout <<"   end"<<endl<<endl;
     }
     cout << "   "<<endl;
     int Ksig = 0;
     for(int i = 0; i < K; i++){
-	if(p_values[i]<=corrected_alpha) Ksig++;
+    if(p_values[i]<=corrected_alpha) Ksig++;
     }
     
     cout << "# Results: "<< endl;
@@ -249,11 +256,11 @@ void readEdgeTable(string filename, vector<vector<int> >& A, vector<vector<doubl
 
         int sid = stoi(v[0]) - startIndex;
         int did = stoi(v[1]) - startIndex;
-	double w = 1;
-	
-	if(v.size()>2){
-        	w = stof(v[2]);
-	}
+    double w = 1;
+    
+    if(v.size()>2){
+            w = stof(v[2]);
+    }
 
         if (N < sid)
             N = sid;
@@ -266,13 +273,12 @@ void readEdgeTable(string filename, vector<vector<int> >& A, vector<vector<doubl
 
     }
     N = N + 1;
-   
+ 
     vector<vector<int>>tmp(N, vector<int>(0));
     vector<vector<double>>tmp2(N, vector<double>(0));
     A = tmp; 
     W = tmp2; 
 
-   
     int wid = 0;
     int edgeListSize = edgeList.size();
     M = 0; 
@@ -281,23 +287,23 @@ void readEdgeTable(string filename, vector<vector<int> >& A, vector<vector<doubl
     for (int i = 0; i < edgeListSize; i += 2) {
         int sid = edgeList[i];
         int did = edgeList[i + 1];
-	double w = wList[wid];
+    double w = wList[wid];
 
-	wid++;
-	
-	if(sid == did){
-        	A[sid].push_back(did);
-        	W[sid].push_back(w);
-		M+=w;
-		isSelfLoop = true;
-	}else{
-        	A[sid].push_back(did);
-        	A[did].push_back(sid);
-        	W[sid].push_back(w);
-        	W[did].push_back(w);
-		M+=w;
-	}
-        isUnweighted = isUnweighted & (abs(w-1.0)<=1e-20);	
+    wid++;
+    
+    if(sid == did){
+            A[sid].push_back(did);
+            W[sid].push_back(w);
+        M+=w;
+        isSelfLoop = true;
+    }else{
+            A[sid].push_back(did);
+            A[did].push_back(sid);
+            W[sid].push_back(w);
+            W[did].push_back(w);
+        M+=w;
+    }
+        isUnweighted = isUnweighted & (abs(w-1.0)<=1e-20);    
     }
     edgeNum = wid;
 }

@@ -8,7 +8,7 @@
 *
 * Core-periphery structure requires something else in the network
 * Sadamori Kojaku and Naoki Masuda
-* Preprint arXiv:1710.07076
+* New J. Physics, 20, 1367-2630, 2018 
 * 
 *
 * Please do not distribute without contacting the authors.
@@ -141,7 +141,6 @@ void estimate_statistical_significance(
 	mtrnd_list[i] = init_random_number_generator();
     }
  
-
     vector<int> nhat;
     vector<double> qhat;
     #ifdef _OPENMP
@@ -344,7 +343,7 @@ void propose_new_label(
 
 double normcdf(double value)
 {
-    return 0.5 + 0.5 * erf(value * M_SQRT1_2);
+    return 0.5 + 0.5 * erf(value * 1.0 / sqrt(2));
 }
 
 
